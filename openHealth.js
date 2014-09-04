@@ -22,6 +22,19 @@ this.getScript=function(src,fun){
     } 
 };
 
+this.xhr=function(url,meth,fun){ // XMLHttpRequest
+    if(typeof(meth)=="function"){fun=meth;meth="GET"} // in case this is a regular GET call
+    var r = new XMLHttpRequest();
+    if(!!fun){r.onload=fun}; // calback
+    r.open(meth,url,true);
+    r.send();
+    return r
+}
+
+this.getJSON=function(url,fun){
+    this.xhr(url,function(x){fun(JSON.parse(x.target.responseText))});
+}
+
 this.sodaData={ // some reference SODA data links
     /*
     Jonas,
@@ -38,6 +51,9 @@ this.soda=function(url,q,fun){ // operate Socrata Open Data API (SODA), http://d
     if(!url.match("http[s]{0,1}://")){ // if url is not a URL then assume it is an entry of openHealth.sodaData
         url=this.sodaData[url];
     }
+    if(typeof(q)=="function"){fun=q;q=""}
+    if(!fun){fun=function(x){console.log(x)}}
+    this.getJSON(url,fun);
     return url
 }
 }
