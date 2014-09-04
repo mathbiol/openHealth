@@ -1,4 +1,4 @@
-console.log("open Health")
+console.log("openHealth loaded")
 
 openHealth=function(){}
 
