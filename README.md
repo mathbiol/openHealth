@@ -21,9 +21,12 @@ A substancial number of Open Health Data resources are delivered through [Socrat
 
 * openHealth.soda("URL or URL reference",fun)
 ```` javascript
-openHealth.soda("NY Medicare Inpatient") // deliver that data to the console
-openHealth.soda("NY Medicare Inpatient",function(x){NYmed=x;console.log("done") // deliver that data to a global variable NYmed
-openHealth.soda("http://health.data.ny.gov/resource/2yck-xisk.json") // same data, using the URL directly
+// deliver that data to the console
+openHealth.soda("NY Medicare Inpatient") 
+// deliver that data to a global variable NYmed
+openHealth.soda("NY Medicare Inpatient",function(x){NYmed=x;console.log("done") 
+// same data, using the URL directly
+openHealth.soda("http://health.data.ny.gov/resource/2yck-xisk.json") 
 // for list of URL references for SODA data see
 openHealth.sodaData
 ````

@@ -56,6 +56,65 @@ this.soda=function(url,q,fun){ // operate Socrata Open Data API (SODA), http://d
     this.getJSON(url,fun);
     return url
 }
+this.docs2tab=function(docs){ // convert array of docs into table
+    var F = Object.getOwnPropertyNames(docs[0]);
+    var m = F.length; // number of fields
+    var n = docs.length; // number of docs
+    var tab = {};
+    for(j=0;j<m;j++){
+        var Fj=F[j];
+        tab[Fj]=[]; // initialize array for jth field
+        for(i=0;i<n;i++){
+            tab[Fj][i]=docs[i][Fj];
+        }
+        // recognize numeric types
+        if(!tab[Fj].join('').match(/[\D]/g)){
+            tab[Fj] = tab[Fj].map(function(xi){
+                return parseFloat(xi);
+            })
+        }
+    }  
+    return tab
 }
 
+this.crossdoc2html=function(d){ // create table from cross-document
+    var html = '<table>';
+    var rows = Object.getOwnPropertyNames(d);
+    var cols = [""].concat(Object.getOwnPropertyNames(d[rows[0]]));
+    // header
+    html +='<tr>';
+    for(j=0;j<cols.length;j++){
+        html+='<th>'+cols[j]+'</th>';
+    }
+    html +='</tr>';
+    // body
+    for(i=0;i<rows.length;i++){
+        html +='<tr>';
+        html +='<th>'+rows[i]+'</th>'; // row label
+        for(j=1;j<cols.length;j++){
+            html+='<td>'+d[rows[i]][cols[j]]+'</td>';
+        }
+        html +='</tr>';
+    }    
+    html += '</table>';
+    return html;
+}
+
+this.log=function(x){
+    console.log(x);
+    var div = document.getElementById("openHealthLog")
+    if(div){
+       var p = document.createElement('p');
+       p.innerHTML=x.replace(/\n/g,'<br>');
+       div.appendChild(p);
+    }
+}
+}
+
+// initiatize openHealth object
 openHealth.ini();
+
+// run external analysis if called as a search argument
+if(window.location.search.length>0){
+    openHealth.getScript(window.location.search.slice(1))
+}
