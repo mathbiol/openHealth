@@ -101,12 +101,14 @@ this.crossdoc2html=function(d){ // create table from cross-document
 }
 
 this.log=function(x){
-    console.log(x);
+    
     var div = document.getElementById("openHealthLog")
     if(div){
        var p = document.createElement('p');
        p.innerHTML=x.replace(/\n/g,'<br>');
        div.appendChild(p);
+    } else{
+       console.log(x);
     }
 }
 }

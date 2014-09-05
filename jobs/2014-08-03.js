@@ -18,9 +18,9 @@ div0.appendChild(divLog);
 // load data and analyse it:
 var log=openHealth.log;    
 openHealth.getScript("https://jmat.googlecode.com/git/jmat.js",function(){
-url = "http://health.data.ny.gov/resource/2yck-xisk.json";
+url = "http://health.data.ny.gov/resource/2yck-xisk.json?county=Suffolk%20";
 log('Getting data from <a href="'+url+'" target=_blank>'+url+'</a> on '+new Date(Date.now()));
-openHealth.soda("http://health.data.ny.gov/resource/2yck-xisk.json?county=Suffolk%20",function(docs){
+openHealth.soda(url,function(docs){
     console.log(docs);
     log("Number of documents: "+docs.length);
     log("fields: <i>"+Object.getOwnPropertyNames(docs[0]).join(", ")+"</i>");
