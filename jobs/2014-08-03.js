@@ -6,7 +6,7 @@ console.log('analysis "2014-08-03.js"')
 
 // --- change message ---
 divMsg=document.getElementById("msg")
-divMsg.innerHTML="Running 2014-08-03.js";
+divMsg.innerHTML="Process: "+window.location.search.slice(1);
 divMsg.style.color="red";
 
 // --- create log div ---
@@ -19,7 +19,7 @@ div0.appendChild(divLog);
 var log=openHealth.log;    
 openHealth.getScript("https://jmat.googlecode.com/git/jmat.js",function(){
 url = "http://health.data.ny.gov/resource/2yck-xisk.json";
-log('getting data from <a href="'+url+'" target=_blank>'+url+'</a>');
+log('Getting data from <a href="'+url+'" target=_blank>'+url+'</a> on '+new Date(Date.now()));
 openHealth.soda("http://health.data.ny.gov/resource/2yck-xisk.json",function(docs){
     console.log(docs);
     log("Number of documents: "+docs.length);
