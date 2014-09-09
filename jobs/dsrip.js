@@ -77,22 +77,30 @@ dsrip=(function(){
             .links(graph.links)
             .start();
     
+    
     var link = svg.selectAll(".link")
       .data(graph.links)
       .enter().append("line")
       .attr("class", "link")
       .style("stroke-width", function(d) { return Math.sqrt(d.value); });
-
-  var node = svg.selectAll(".node")
+      
+      var node = svg.selectAll(".node")
       .data(graph.nodes)
       .enter().append("circle")
       .attr("class", "node")
       .attr("r", 5)
       .style("fill", function(d) { return color(d.group); })
-      .call(force.drag);
+      .call(force.drag);  
+
 
   node.append("title")
       .text(function(d) { return d.name; });
+
+  node.append("text")
+    .attr("x", 5)
+    .attr("dy", ".35em")
+    .text(function( d ) { return d.name })
+    .style("font-size","8px");
 
   force.on("tick", function() {
     link.attr("x1", function(d) { return d.source.x; })
@@ -103,6 +111,8 @@ dsrip=(function(){
     node.attr("cx", function(d) { return d.x; })
         .attr("cy", function(d) { return d.y; });
   });
+  
+  
   
   jQuery('.node').css('stroke','#fff')
   jQuery('.node').css('stroke-width','1.5px')
