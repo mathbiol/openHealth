@@ -67,7 +67,7 @@ dsrip=(function(){
         var color = d3.scale.category20();
         var force = d3.layout.force()
             .charge(-120)
-            .linkDistance(100)
+            .linkDistance(30)
             .size([width, height]);
         var svg = d3.select(document.getElementById("openHealthD3")).append("svg")
             .attr("width", width)
@@ -84,42 +84,37 @@ dsrip=(function(){
       .attr("class", "link")
       .style("stroke-width", function(d) { return Math.sqrt(d.value); });
       
-      // Create the groups under svg
-var gnodes = svg.selectAll('g.gnode')
-  .data(graph.nodes)
-  .enter()
-  .append('g')
-  .classed('gnode', true);
+      var node = svg.selectAll(".node")
+      .data(graph.nodes)
+      .enter().append("circle")
+      .attr("class", "node")
+      .attr("r", function(d){ return d.r})
+      .style("fill", function(d) { return color(d.group); })
+      .call(force.drag);  
 
-// Add one circle in each group
-var node = gnodes.append("circle")
-  .attr("class", "node")
-  .attr("r", function(d) { return d.r})
-  .style("fill", function(d) { return color(d.group); })
-  .call(force.drag);
 
-// Append the labels to each group
-var labels = gnodes.append("text")
-  .attr("x", 6)
-  .attr("dy", ".35em")
-  .text(function(d) { return d.name; });
+  node.append("title")
+      .text(function(d) { return d.name; });
 
-force.on("tick", function() {
-  // Update the links
-  link.attr("x1", function(d) { return d.source.x; })
-    .attr("y1", function(d) { return d.source.y; })
-    .attr("x2", function(d) { return d.target.x; })
-    .attr("y2", function(d) { return d.target.y; });
+  node.append("text")
+    .attr("x", 5)
+    .attr("dy", ".35em")
+    .text(function( d ) { return d.name })
+    .style("font-size","8px");
 
-  // Translate the groups
-  gnodes.attr("transform", function(d) { 
-    return 'translate(' + [d.x, d.y] + ')'; 
-  });    
+  force.on("tick", function() {
+    link.attr("x1", function(d) { return d.source.x; })
+        .attr("y1", function(d) { return d.source.y; })
+        .attr("x2", function(d) { return d.target.x; })
+        .attr("y2", function(d) { return d.target.y; });
 
-});
-
+    node.attr("cx", function(d) { return d.x; })
+        .attr("cy", function(d) { return d.y; });
+  });
   
-  jQuery('.node').css('stroke','navy')
+  
+  
+  jQuery('.node').css('stroke','#fff')
   jQuery('.node').css('stroke-width','1.5px')
   jQuery('.link').css('stroke','#999')
   jQuery('.link').css('stroke','.6')
