@@ -172,6 +172,71 @@ this.createLog=function(){ // create log div, if posiible, within an existing op
     return divLog;
 }
 
+this.forceGraph=function(div,graph,width,height){
+    if(!div){var div = document.createElement("div");document.body.appendChild(div)}
+    if(typeof(div)=="string"){div=document.getElementById(div)}
+    if(!width){width=960}
+    if(!height){height=500}    
+    var color = d3.scale.category20();
+    var force = d3.layout.force()
+        .charge(-120)
+        .size([width, height]);
+    var svg = d3.select(document.getElementById("openHealthD3")).append("svg")
+        .attr("width", width)
+        .attr("height", height);
+    force
+        .nodes(graph.nodes)
+        .links(graph.links)
+        .start();
+    var link = svg.selectAll(".link")
+        .data(graph.links)
+        .enter().append("line")
+        .attr("class", "link")
+        .style("stroke-width", function(d) { return Math.sqrt(d.value); });
+      
+      // Create the groups under svg
+    var gnodes = svg.selectAll('g.gnode')
+        .data(graph.nodes)
+        .enter()
+            .append('g')
+            .classed('gnode', true);
+
+       // Add one circle in each group
+    var node = gnodes.append("circle")
+        .attr("class", "node")
+        .attr("r", function(d) { return d.r})
+        .style("fill", function(d) { return color(d.group); })
+        .call(force.drag);
+
+        // Append the labels to each group
+        var labels = gnodes.append("text")
+        .attr("x", 6)
+        .attr("dy", ".35em")
+        .text(function(d) { return d.name; });
+
+        force.on("tick", function() {
+            // Update the links
+            link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+
+            // Translate the groups
+            gnodes.attr("transform", function(d) { 
+                return 'translate(' + [d.x, d.y] + ')'; 
+            });    
+
+        });
+
+  
+        jQuery('.node').css('stroke','navy')
+        jQuery('.node').css('stroke-width','1.5px')
+        jQuery('.link').css('stroke','#999')
+        jQuery('.link').css('stroke','.6')
+        
+        return force
+    
+    }
 
 }
 
