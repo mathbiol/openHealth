@@ -83,7 +83,7 @@ dsrip=(function(){
         
         graph=dsrip.graph;
         4
-        var width = 960,height = 960;
+        var width = 960,height = 700;
         var color = d3.scale.category20();
         var force = d3.layout.force()
             .charge(-120)
