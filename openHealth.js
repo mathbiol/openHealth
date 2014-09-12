@@ -32,8 +32,31 @@ this.xhr=function(url,meth,fun){ // XMLHttpRequest
 }
 
 this.getJSON=function(url,fun){
-    this.xhr(url,function(x){fun(JSON.parse(x.target.responseText))});
+    
+    if(!this.getJSON.cache){ // if caching not enabled
+        this.xhr(url,function(x){fun(JSON.parse(x.target.responseText))});
+    } else {
+        var key = encodeURIComponent(url);
+        localforage.getItem(key,function(x){
+            if(!x){ // if item not found
+                var moreFun = function(x){
+                    var y = JSON.parse(x.target.responseText);
+                    fun(y);
+                    localforage.setItem(key,y);
+                    //console.log('seting '+key);
+                }
+                openHealth.xhr(url,moreFun);
+            } else {
+                fun(x);
+                //console.log('got '+key);
+            }
+        })
+        
+    }
+    
 }
+
+this.getJSON.cache=true
 
 this.sodaData={ // some reference SODA data links 
     "NY Medicare Inpatient":"http://health.data.ny.gov/resource/2yck-xisk.json",

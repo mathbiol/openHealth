@@ -6,7 +6,7 @@ console.log('analysis "2014-08-03.js"')
 
 // --- change message ---
 divMsg=document.getElementById("msg")
-divMsg.innerHTML="Process: "+window.location.search.slice(1);
+divMsg.innerHTML='Process: <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
 divMsg.style.color="red";
 
 // --- create log div ---
