@@ -12,7 +12,9 @@ $.getScript("https://mathbiol.github.io/openHealth/openHealth.js")
 ```
 OpenHealth is a stand alone JavaScript library to help interoperating with public data sources of Health data. It creates a single object, **openHealth** in the DOM namespace following the same "namespace pollution" approach common in analytical environments such as Matlab and R.
 
-### API
+### API example
+
+Full documentation will be developed in the [wiki](https://github.com/mathbiol/openHealth/wiki)
 
 #### SODA services
 
