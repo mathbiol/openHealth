@@ -10,7 +10,7 @@ or, if you have jQuery,
 ``` javascript
 $.getScript("https://mathbiol.github.io/openHealth/openHealth.js")
 ```
-This openHealth library is being developed as a helper in interoperating with public data sources for Health data. This JavaScript library creates a single object in the DOM namespace following the same "namespace pollution" approach common in analytical environments such as Matlab and R.
+OpenHealth is a stand alone JavaScript library to help interoperating with public data sources of Health data. It creates a single object, **openHealth** in the DOM namespace following the same "namespace pollution" approach common in analytical environments such as Matlab and R.
 
 ### API
 
@@ -24,7 +24,7 @@ A substancial number of Open Health Data resources are delivered through [Socrat
 // deliver that data to the console
 openHealth.soda("NY Medicare Inpatient") 
 // deliver that data to a global variable NYmed
-openHealth.soda("NY Medicare Inpatient",function(x){NYmed=x;console.log("done") 
+openHealth.soda("NY Medicare Inpatient",function(x){NYmed=x;console.log("done")})
 // same data, using the URL directly
 openHealth.soda("http://health.data.ny.gov/resource/2yck-xisk.json") 
 // for list of URL references for SODA data see
