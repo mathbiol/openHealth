@@ -14,7 +14,7 @@ OpenHealth is a stand alone JavaScript library to help interoperating with publi
 
 ### API example
 
-Full documentation will be developed in the [wiki](https://github.com/mathbiol/openHealth/wiki)
+Full documentation in the [wiki](https://github.com/mathbiol/openHealth/wiki)
 
 #### SODA services
 
