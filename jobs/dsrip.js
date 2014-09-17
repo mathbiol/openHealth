@@ -2,7 +2,7 @@
 // Generic Dashboar with real-time analytics of DSRIP data sources
 // we'll use this exercise to advance the analytics environment
 
-openHealth.getScript("https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js",function(){ // after satisfying d3 dependency
+openHealth.getScript(["https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","https://square.github.io/crossfilter/crossfilter.v1.min.js","https://dc-js.github.io/dc.js/js/dc.js"],function(){ // after satisfying d3 dependency
 
 dsrip=(function(){
     var y={ // dsrip object returned at the end
@@ -12,7 +12,9 @@ dsrip=(function(){
     var println = openHealth.log;
     var divLog = openHealth.createLog(); // creates div for html printout
     var divD3 = document.createElement('div');divD3.id="openHealthD3";
+    var divStat = document.createElement('div');divStat.id="openHealthStat";
     document.getElementById("openHealth").appendChild(divD3);
+    document.getElementById("openHealth").appendChild(divStat);
     println('<h4 style="color:blue">DSRIP dashboard<h4>');
     println("Let's query all [SODA](http://dev.socrata.com/consumers/getting-started.html) data sources listed by [DSRIP](https://www.health.ny.gov/health_care/medicaid/redesign/dsrip_performance_data/) and see what we get.");
     //list DSRIP data sources
@@ -25,7 +27,8 @@ dsrip=(function(){
             var Lid = String.fromCharCode(65+j);
             println('<button style="color:navy" onclick="dsrip.dataButton(this)">'+Lid+'</button> ['+D[i]+']('+openHealth.sodaData[D[i]]+')');
             y.dt[Lid]={
-                url:D[i],
+                title:D[i],
+                url:openHealth.sodaData[D[i]],
                 selected:false
             }
             j++;
@@ -41,7 +44,9 @@ dsrip=(function(){
             bt.style.backgroundColor="yellow";
             var fun = function (x){
                 dt.attr=Object.getOwnPropertyNames(x[0]); // attributes
+                dsrip.dtSelected=bt.textContent;
                 dsrip.updateDash(); // update D3 forced graph dashboad
+                dsrip.updateStat(); // update statistical analysis
             }
             openHealth.soda2(dt.url,{limit:1},fun)
         } else {
@@ -81,7 +86,7 @@ dsrip=(function(){
         }
         
         
-        graph=dsrip.graph;
+        var graph=dsrip.graph;
         4
         var width = 960,height = 700;
         var color = d3.scale.category20();
@@ -148,6 +153,47 @@ dsrip=(function(){
         
   
         4
+    }
+    
+    y.updateStat=function(){
+        console.log('updateStat of "'+dsrip.dtSelected+'"');
+        var dt = dsrip.dt[dsrip.dtSelected];
+        //openHealth.soda2(dt.url,{limit:1},fun)
+        var div = document.getElementById("openHealthStat");
+        div.innerHTML='<h4>Stats, Navigating "'+dsrip.dtSelected+'":</h4>(note: for now analysis sampling only up to 10,000 patients at a time; should everybody always be counted or is resampling good enough?)<table id=statsTable></table>';
+		
+        var fun = function(x){
+			var dti=dt;
+            // layoit statsTable
+			var n = Math.ceil(Math.sqrt(dti.attr.length));
+			var tb = document.getElementById('statsTable');
+			var tbody = document.createElement('tbody');
+			tb.appendChild(tbody);
+			for(var i=0;i<n;i++){
+				var tr = document.createElement('tr');
+				tbody.appendChild(tr);
+				for(var j=0;j<n;j++){
+					var ij=i*n+j;
+					var td = document.createElement('td');
+					tr.appendChild(td);
+					td.textContent=ij+':('+i+','+j+'):'+dti.attr[ij];
+				}
+			}
+			
+			4
+        }
+        if(!dt.docs){
+            openHealth.soda2(dt.url,{'limit':10000},function(x){
+                dt.tab = openHealth.docs2tab(x)
+                dt.docs = openHealth.tab2docs(dt.tab)
+                fun(x);
+            })
+        } else { fun()}
+        
+            
+        
+        
+        
     }
     
     return y

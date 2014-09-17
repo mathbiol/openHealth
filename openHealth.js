@@ -59,25 +59,26 @@ this.getJSON=function(url,fun){
 this.getJSON.cache=true
 
 this.sodaData={ // some reference SODA data links 
-    "NY Medicare Inpatient":"http://health.data.ny.gov/resource/2yck-xisk.json",
+    // "NY Medicare Inpatient":"http://health.data.ny.gov/resource/2yck-xisk.json",
     // DSRIP NY
     // Hospital Inpatient Prevention Quality Indicators
-    "NY DSRIP Hospital Inpatient Prevention Quality Indicators by Zip Code":"http://health.data.ny.gov/resource/5q8c-d6xq.json",
-    "NY DSRIP Hospital Inpatient Prevention Quality Indicators by County":"http://health.data.ny.gov/resource/iqp6-vdi4.json",
-    "NY DSRIP Medicaid Prevention Quality Indicators for Adult Hospital Discharges by Patient Zip Code: Beginning 2011":"http://health.data.ny.gov/resource/izyt-3msa.json",
-    "NY DSRIP Medicaid Inpatient Prevention Quality Indicators for Adult Discharges by Patient County: Beginning 2011":"http://health.data.ny.gov/resource/6kjt-7svn.json",
-    "NY DSRIP Medicaid Beneficiaries, Inpatient Admissions, and Emergency Room Visits by Zip Code: Beginning 2012":"http://health.data.ny.gov/resource/m2wt-pje4.json",
-    "NY DSRIP Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by County: Beginning 2012":"http://health.data.ny.gov/resource/wybq-m39t.json",
-    "NY DSRIP Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by Zip Code: Beginning 2012":"http://health.data.ny.gov/resource/2yck-xisk.json",
-    "NY DSRIP Medicaid Hospital Inpatient Potentially Preventable Readmission Rates by Hospital: Beginning 2011":"http://health.data.ny.gov/resource/ckvf-rbyn.json",
-    "NY DSRIP Medicaid Program Enrollment by Month: Beginning 2009":"http://health.data.ny.gov/resource/m4hz-kzn3.json",
+    "DSRIP Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009":"https://health.data.ny.gov/resource/5q8c-d6xq.json",
+    "DSRIP Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by County (SPARCS): Beginning 2009":"https://health.data.ny.gov/resource/iqp6-vdi4.json",
+    "DSRIP Medicaid Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Patient Zip Code: Beginning 2011":"https://health.data.ny.gov/resource/izyt-3msa.json",
+    "DSRIP Medicaid Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Patient County: Beginning 2011":"https://health.data.ny.gov/resource/6kjt-7svn.json",
+    "DSRIP Medicaid Beneficiaries, Inpatient Admissions and Emergency Room Visits by Zip Code: Beginning 2012":"https://health.data.ny.gov/resource/m2wt-pje4.json",
+    "DSRIP Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by County: Beginning 2012":"https://health.data.ny.gov/resource/wybq-m39t.json",
+    "DSRIP Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by Zip Code: Beginning 2012":"https://health.data.ny.gov/resource/2yck-xisk.json",
+    "DSRIP Medicaid Hospital Inpatient Potentially Preventable Readmission (PPR) Rates by Hospital: Beginning 2011":"https://health.data.ny.gov/resource/ckvf-rbyn.json",
     // Medicaid Inpatient Admissions and Emergency Room Visits
     // "NY DSRIP Medicaid Beneficiaries, Inpatient Admissions, and Emergency Room Visits by Zip Code: Beginning 2012":"http://health.data.ny.gov/resource/m2wt-pje4.json",
     // "NY DSRIP Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by Zip Code: Beginning 2012":"http://health.data.ny.gov/resource/2yck-xisk.json",
     //"NY DSRIP Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by County: Beginning 2012":"http://health.data.ny.gov/resource/wybq-m39t.json",
-    "NY DSRIP Medicaid Potentially Preventable Emergency Visit (PPV) Rates by Patient County: Beginning 2011":"http://health.data.ny.gov/resource/cr7a-34ka.json",
-    "NY DSRIP Medicaid Potentially Preventable Emergency Visits (PPV) by Patient Zip Code: Beginning 2011":"http://health.data.ny.gov/resource/khkm-zkp2.json",
-    "NY DSRIP Medicaid Inpatient Prevention Quality Indicators (PDI) for Pediatric Discharges by Patient County: Beginning 2011":"http://health.data.ny.gov/resource/64yg-akce.json",
+    "DSRIP Medicaid Potentially Preventable Emergency Visit (PPV) Rates by Patient County: Beginning 2011":"https://health.data.ny.gov/resource/cr7a-34ka.json",
+    "DSRIP Medicaid Potentially Preventable Emergency Visits (PPV) by Patient Zip Code: Beginning 2011":"https://health.data.ny.gov/resource/khkm-zkp2.json",
+    "DSRIP Medicaid Inpatient Prevention Quality Indicators (PDI) for Pediatric Discharges by Patient County: Beginning 2011":"https://health.data.ny.gov/resource/64yg-akce.json",
+	"DSRIP Medicaid Program Enrollment by Month: Beginning 2009":"https://health.data.ny.gov/resource/m4hz-kzn3.json"
+    //"Medicaid Inpatient Prevention Quality Indicators (PDI) for Pediatric Discharges by Patient County: Beginning 2011":"http://health.data.ny.gov/resource/64yg-akce.json",
     // MIS
     // "NY DSRIP Discharge":"http://health.data.ny.gov/resource/ckvf-rbyn.json"
 }
@@ -117,7 +118,7 @@ this.docs2tab=function(docs){ // convert array of docs into table
             tab[Fj][i]=docs[i][Fj];
         }
         // recognize numeric types
-        if(!tab[Fj].join('').match(/[\D]/g)){
+        if(!tab[Fj].join('').match(/[^\d\.]/g)){
             tab[Fj] = tab[Fj].map(function(xi){
                 return parseFloat(xi);
             })
@@ -125,6 +126,37 @@ this.docs2tab=function(docs){ // convert array of docs into table
     }  
     return tab
 }
+
+this.tab2docs=function(tab){
+    var docs=[];
+    var F = Object.getOwnPropertyNames(tab);
+    var n = tab[F[0]].length; // # rows
+    var m = F.length; // # fields
+    for(var i=0 ; i<n ; i++){
+        docs[i]={};
+        for(var j=0 ; j<m ; j++){
+            docs[i][F[j]]=tab[F[j]][i];
+        }
+    }
+    return docs
+}
+
+this.docs2docs=function(docs){ // recognize numerical types
+    return this.tab2docs(this.docs2tab(docs))
+}
+
+this.unique=function (x){ // x should be an Array
+	if(typeof(x)=='string'){x=x.split('')}; // if it is a string, break it into an array of its characters
+	var u = []; // store unique here
+	u[0]=x[0];
+	for (var i=1; i<x.length; i++){
+		// check if x[i] is new
+		if (u.map(function(ui){return ui===x[i]}).reduce(function(a,b){return a+b})==0){
+			u[u.length]=x[i];
+		}
+	}
+	return u;
+} 
 
 this.crossdoc2html=function(d){ // create table from cross-document
     var html = '<table>';
