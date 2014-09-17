@@ -158,12 +158,13 @@ dsrip=(function(){
     y.updateStat=function(){
         console.log('updateStat of "'+dsrip.dtSelected+'"');
         var dt = dsrip.dt[dsrip.dtSelected];
+		dt.ind=dsrip.dtSelected;
         //openHealth.soda2(dt.url,{limit:1},fun)
         var div = document.getElementById("openHealthStat");
-        div.innerHTML='<h4>Stats, Navigating "'+dsrip.dtSelected+'":</h4>(note: for now analysis sampling only up to 10,000 patients at a time; should everybody always be counted or is resampling good enough?)<table id=statsTable></table>';
-		
+        div.innerHTML='<h4>Stats, Navigating '+dsrip.dtSelected+':</h4><span style="color:green"><b>'+dt.title+'</b></span><br>(note: for now analysis sampling only up to 10,000 patients at a time; should everybody always be counted or is resampling good enough?)<table id=statsTable></table>';
         var fun = function(x){
 			var dti=dt;
+			var cf = crossfilter(dti.docs); // crossfilter started
             // layoit statsTable
 			var n = Math.ceil(Math.sqrt(dti.attr.length));
 			var tb = document.getElementById('statsTable');
@@ -174,13 +175,43 @@ dsrip=(function(){
 				tbody.appendChild(tr);
 				for(var j=0;j<n;j++){
 					var ij=i*n+j;
+					var att = dti.attr[ij];
 					var td = document.createElement('td');
 					tr.appendChild(td);
-					td.textContent=ij+':('+i+','+j+'):'+dti.attr[ij];
+					if(ij<dti.attr.length){
+						//td.textContent=ij+':('+i+','+j+'):'+dti.attr[ij];
+						td.innerHTML='<p style="color:navy">'+dti.ind+'.'+(ij+1)+':'+dti.attr[ij]+'</p>';
+						td.id='statsTable_'+(ij+1);
+						if(att.match('year')){ // plot a pie chard
+							var plotDiv = document.createElement('div');
+							plotDiv.id='plotDiv_'+att
+							plotDiv.textContent=plotDiv.id;						
+							td.appendChild(plotDiv);
+							// bake the pie
+							var pieYear = dc.pieChart('#'+plotDiv.id);
+							var yearDim = cf.dimension(function (d){
+									return d[att]
+								});
+							var yearGroup = yearDim.group();
+							
+							pieYear
+								.width(250)
+								.height(220)
+								.radius(100)
+								.innerRadius(30)
+								.dimension(yearDim)
+								.group(yearGroup)
+								.title(function(d){return d[att]});
+							
+							
+							4
+						}
+					}
+					
 				}
 			}
+			dc.renderAll();
 			
-			4
         }
         if(!dt.docs){
             openHealth.soda2(dt.url,{'limit':10000},function(x){
