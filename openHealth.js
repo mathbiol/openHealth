@@ -14,11 +14,21 @@ this.getScript=function(src,fun){
             });          
         }        
     } else {
-        var s = document.createElement('script');
-        s.src = src;
-        if(!!fun){s.onload=fun} // if there is a callback run it
-        document.head.appendChild(s);
-        return src; // I never know what to do about returns in asynchronous calls ...
+		// check for the possibility that this is a css sheet
+		if(src.match(/\.css/)){
+			var lk = document.createElement('link');
+			lk.rel='stylesheet';
+        	lk.href = src;
+        	if(!!fun){lk.onload=fun} // if there is a callback run it
+        	document.head.appendChild(lk);
+        	return src
+		} else { // it's javascript 
+			var s = document.createElement('script');
+			s.src = src;
+			if(!!fun){s.onload=fun} // if there is a callback run it
+			document.head.appendChild(s);
+			return src; // I never know what to do about returns in asynchronous calls ...
+		}	
     } 
 };
 
@@ -106,6 +116,7 @@ this.soda2=function(url,q,fun){ // operate SODA2 services
     }
     return this.soda(url,q,fun)
 }
+
 this.docs2tab=function(docs){ // convert array of docs into table
     var F = Object.getOwnPropertyNames(docs[0]);
     var m = F.length; // number of fields
@@ -194,28 +205,7 @@ this.log=function(x){
     }
 }
 
-this.startJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exists
-    var divMsg=document.getElementById("msg")
-    if(divMsg){
-        divMsg.innerHTML='Processing ... : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
-        divMsg.style.color="red";
-    }    
-}
-
-this.endJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exists
-    var divMsg=document.getElementById("msg")
-    if(divMsg){
-        divMsg.style.color="blue";
-        divMsg.innerHTML='Processing ... done : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
-        setTimeout(function(){
-            divMsg.innerHTML='Script (<a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>) processed <i>'+new Date(Date.now())+'</i>:';
-            divMsg.style.color="green";
-        },1000)
-        
-    }    
-}
-
-this.createLog=function(){ // create log div, if posiible, within an existing openHealth div
+this.createLog=function(h){ // create log div, if posiible, within an existing openHealth div
     var div0 = document.getElementById("openHealth");
     if(!div0){
         div0 = document.createElement('div');
@@ -223,9 +213,34 @@ this.createLog=function(){ // create log div, if posiible, within an existing op
     }
     var divLog = document.createElement('div');
     divLog.id="openHealthLog";
+	if(h){divLog.innerHTML=h};
     div0.appendChild(divLog);
     return divLog;
 }
+
+this.startJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exists
+    var divMsg=document.getElementById("msg")
+    if(divMsg){
+        divMsg.innerHTML='Processing ... : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
+        divMsg.style.color="red";
+    }
+	this.createLog('<p style="color:red">loading job, please wait ...</p>')
+}
+
+this.endJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exists
+    var divMsg=document.getElementById("msg")
+    if(divMsg){
+		//document.getElementById("openHealthLog").innerHTML="";
+        divMsg.style.color="blue";
+        divMsg.innerHTML='Processing ... done : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
+        setTimeout(function(){
+            divMsg.innerHTML='Script (<a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>) processed <i>'+new Date(Date.now())+'</i>:';
+            divMsg.style.color="green";
+        },1000)
+        
+    }
+}
+
 
 this.forceGraph=function(div,graph,width,height){
     if(!div){var div = document.createElement("div");document.body.appendChild(div)}

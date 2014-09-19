@@ -2,7 +2,7 @@
 // Generic Dashboar with real-time analytics of DSRIP data sources
 // we'll use this exercise to advance the analytics environment
 
-openHealth.getScript(["https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","https://square.github.io/crossfilter/crossfilter.v1.min.js","https://dc-js.github.io/dc.js/js/dc.js"],function(){ // after satisfying d3 dependency
+openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
 
 dsrip=(function(){
     var y={ // dsrip object returned at the end
@@ -20,6 +20,7 @@ dsrip=(function(){
     //list DSRIP data sources
     var D = Object.getOwnPropertyNames(openHealth.sodaData);
     var j=0;
+	(document.getElementById("openHealthLog")).innerHTML=""; // clearing log
     for(var i=D.length-1;i>=0;i--){
         if(!D[i].match('DSRIP')){
             D.splice(i,1);
@@ -162,6 +163,7 @@ dsrip=(function(){
         //openHealth.soda2(dt.url,{limit:1},fun)
         var div = document.getElementById("openHealthStat");
         div.innerHTML='<h4>Stats, Navigating '+dsrip.dtSelected+':</h4><span style="color:green"><b>'+dt.title+'</b></span><br>(note: for now analysis sampling only up to 10,000 patients at a time; should everybody always be counted or is resampling good enough?)<table id=statsTable></table>';
+		div.focus();
         var fun = function(x){
 			var dti=dt;
 			var cf = crossfilter(dti.docs); // crossfilter started
@@ -185,14 +187,12 @@ dsrip=(function(){
 						if(att.match('year')){ // plot a pie chard
 							var plotDiv = document.createElement('div');
 							plotDiv.id='plotDiv_'+att
-							plotDiv.textContent=plotDiv.id;						
+							//plotDiv.textContent=plotDiv.id;						
 							td.appendChild(plotDiv);
 							// bake the pie
 							var pieYear = dc.pieChart('#'+plotDiv.id);
-							var yearDim = cf.dimension(function (d){
-									return d[att]
-								});
-							var yearGroup = yearDim.group();
+							var yearDim = cf.dimension(function (d){return d[att]});
+							var yearGroup = yearDim.group();//.reduceSum(function (d){return d[att]});
 							
 							pieYear
 								.width(250)
@@ -205,12 +205,35 @@ dsrip=(function(){
 							
 							
 							4
+						} else if(att.match('pqi_name')){
+							//console.log(att);
+							//var attName=att;
+							var plotDiv = document.createElement('div');
+							plotDiv.id='plotDiv_'+att
+							plotDiv.textContent=plotDiv.id;						
+							td.appendChild(plotDiv);
+							// bar chart
+							var rowName = dc.rowChart('#'+plotDiv.id);
+							var nameDim = cf.dimension(function (d){return d[att]});
+							//var nameGroup = nameDim.group().reduce(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
+							var nameGroup = nameDim.group().reduceSum(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
+							//nameGroup.reduce(function(d,i){return d.observed_rate_per_100_000_people/nameGroupAll[i].value})
+							rowName
+								.width(400)
+								//.height(220)
+								.height(nameGroup.size()*30)
+								.margins({top: 5, left: 10, right: 10, bottom: 20})
+								.dimension(nameDim)
+								.group(nameGroup)
+								.title(function(d){return d[att]})
 						}
 					}
 					
 				}
 			}
 			dc.renderAll();
+			// add-on effects
+			$('.dc-chart g.row text').css('fill','black');
 			
         }
         if(!dt.docs){
