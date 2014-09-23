@@ -167,7 +167,7 @@ dsrip=(function(){
         var fun = function(x){
 			var dti=dt;
 			var cf = crossfilter(dti.docs); // crossfilter started
-            // layoit statsTable
+            // layout statsTable
 			var n = Math.ceil(Math.sqrt(dti.attr.length));
 			var tb = document.getElementById('statsTable');
 			var tbody = document.createElement('tbody');
@@ -216,7 +216,42 @@ dsrip=(function(){
 							var rowName = dc.rowChart('#'+plotDiv.id);
 							var nameDim = cf.dimension(function (d){return d[att]});
 							//var nameGroup = nameDim.group().reduce(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
-							var nameGroup = nameDim.group().reduceSum(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
+							var nameCounts = openHealth.countUnique(dti.tab[att]);
+							var reduceObj={};
+							var aij = att; // to avoid scoping trouble
+							openHealth.unique(dti.tab[aij]).map(function(a){
+								reduceObj[a]={count:0,val:0}
+							})
+							
+							var reduceAdd = function(p,v){
+								var c = v.pqi_name // category within att
+								reduceObj[c].count++;
+								reduceObj[c].val+=v["observed_rate_per_100_000_people"];
+								return reduceObj[c].val/reduceObj[c].count;
+							}
+							var reduceRemove = function(p,v){
+								var c = v.pqi_name // category within att
+								reduceObj[c].count--;
+								reduceObj[c].val-=v["observed_rate_per_100_000_people"];
+								return reduceObj[c].val/reduceObj[c].count;
+							}
+							/*var reduceAdd = function(p,v){
+									if(v["observed_rate_per_100_000_people"]>p){var y=v["observed_rate_per_100_000_people"]-p}
+									else {var y = p}
+									return y;
+							}
+							var reduceRemove = function(p,v){
+									if(v["observed_rate_per_100_000_people"]<p){var y=p-v["observed_rate_per_100_000_people"]}
+									else {var y = v["observed_rate_per_100_000_people"]}
+									return y;
+							}*/
+							var nameGroup = nameDim.group().reduce(
+								reduceAdd,
+								reduceRemove,
+								function(){return 0}
+							)
+							
+							//var nameGroup = nameDim.group().reduceSum(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
 							//nameGroup.reduce(function(d,i){return d.observed_rate_per_100_000_people/nameGroupAll[i].value})
 							rowName
 								.width(400)
