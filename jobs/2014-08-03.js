@@ -12,7 +12,7 @@ divMsg.style.color="red";
 // --- create log div ---
 div0 = document.getElementById("openHealth");
 divLog = document.createElement('div');
-divLog.id="openHealthLog";
+divLog.id="openHealthJob";
 div0.appendChild(divLog);
 
 // load data and analyse it:

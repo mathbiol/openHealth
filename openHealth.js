@@ -203,7 +203,7 @@ this.markdown=function(x){ // basic markdown2html
 }
 
 this.log=function(x){
-    var div = document.getElementById("openHealthLog")
+    var div = document.getElementById("openHealthJob")
     if(div){
        var p = document.createElement('p');
        p.innerHTML=openHealth.markdown(x);
@@ -220,7 +220,7 @@ this.createLog=function(h){ // create log div, if posiible, within an existing o
         document.body.appendChild(div0);
     }
     var divLog = document.createElement('div');
-    divLog.id="openHealthLog";
+    divLog.id="openHealthJob";
 	if(h){divLog.innerHTML=h};
     div0.appendChild(divLog);
     return divLog;
@@ -232,13 +232,13 @@ this.startJobMsgURL=function(){ // post URL of job into the div.id="msg" if it e
         divMsg.innerHTML='Processing ... : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
         divMsg.style.color="red";
     }
-	this.createLog('<p style="color:red">Loading job, please wait ...</p>')
+	this.createLog('<p style="color:red">Executing job, please wait ...</p>')
 }
 
 this.endJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exists
     var divMsg=document.getElementById("msg")
     if(divMsg){
-		//document.getElementById("openHealthLog").innerHTML="";
+		//document.getElementById("openHealthJob").innerHTML="";
         divMsg.style.color="blue";
         divMsg.innerHTML='Processing ... done : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
         setTimeout(function(){

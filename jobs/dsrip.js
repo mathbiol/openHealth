@@ -21,7 +21,7 @@ dsrip=(function(){
     //list DSRIP data sources
     var D = Object.getOwnPropertyNames(openHealth.sodaData);
     var j=0;
-	(document.getElementById("openHealthLog")).innerHTML=""; // clearing log
+	(document.getElementById("openHealthJob")).innerHTML=""; // clearing log
     for(var i=D.length-1;i>=0;i--){
         if(!D[i].match('DSRIP')){
             D.splice(i,1);
