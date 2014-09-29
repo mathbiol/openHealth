@@ -1,6 +1,7 @@
 // https://www.health.ny.gov/health_care/medicaid/redesign/dsrip_performance_data/
 // Generic Dashboar with real-time analytics of DSRIP data sources
 // we'll use this exercise to advance the analytics environment
+// see https://becomingadatascientist.wordpress.com/tag/crossfilter-js/ for cf tips
 
 openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
 
@@ -184,6 +185,7 @@ dsrip=(function(){
 						//td.textContent=ij+':('+i+','+j+'):'+dti.attr[ij];
 						td.innerHTML='<p style="color:navy">'+dti.ind+'.'+(ij+1)+':'+dti.attr[ij]+'</p>';
 						td.id='statsTable_'+(ij+1);
+						//var aij = att; // to avoid scoping trouble
 						if(att.match('year')){ // plot a pie chard
 							var plotDiv = document.createElement('div');
 							plotDiv.id='plotDiv_'+att
@@ -205,63 +207,10 @@ dsrip=(function(){
 							
 							
 							4
-						} else if(att.match('pqi_name')){
-							//console.log(att);
-							//var attName=att;
-							var plotDiv = document.createElement('div');
-							plotDiv.id='plotDiv_'+att
-							plotDiv.textContent=plotDiv.id;						
-							td.appendChild(plotDiv);
-							// bar chart
-							var rowName = dc.rowChart('#'+plotDiv.id);
-							var nameDim = cf.dimension(function (d){return d[att]});
-							//var nameGroup = nameDim.group().reduce(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
-							var nameCounts = openHealth.countUnique(dti.tab[att]);
-							var reduceObj={};
-							var aij = att; // to avoid scoping trouble
-							openHealth.unique(dti.tab[aij]).map(function(a){
-								reduceObj[a]={count:0,val:0}
-							})
-							
-							var reduceAdd = function(p,v){
-								var c = v.pqi_name // category within att
-								reduceObj[c].count++;
-								reduceObj[c].val+=v["observed_rate_per_100_000_people"];
-								return reduceObj[c].val/reduceObj[c].count;
-							}
-							var reduceRemove = function(p,v){
-								var c = v.pqi_name // category within att
-								reduceObj[c].count--;
-								reduceObj[c].val-=v["observed_rate_per_100_000_people"];
-								return reduceObj[c].val/reduceObj[c].count;
-							}
-							/*var reduceAdd = function(p,v){
-									if(v["observed_rate_per_100_000_people"]>p){var y=v["observed_rate_per_100_000_people"]-p}
-									else {var y = p}
-									return y;
-							}
-							var reduceRemove = function(p,v){
-									if(v["observed_rate_per_100_000_people"]<p){var y=p-v["observed_rate_per_100_000_people"]}
-									else {var y = v["observed_rate_per_100_000_people"]}
-									return y;
-							}*/
-							var nameGroup = nameDim.group().reduce(
-								reduceAdd,
-								reduceRemove,
-								function(){return 0}
-							)
-							
-							//var nameGroup = nameDim.group().reduceSum(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
-							//nameGroup.reduce(function(d,i){return d.observed_rate_per_100_000_people/nameGroupAll[i].value})
-							rowName
-								.width(400)
-								//.height(220)
-								.height(nameGroup.size()*30)
-								.margins({top: 5, left: 10, right: 10, bottom: 20})
-								.dimension(nameDim)
-								.group(nameGroup)
-								.title(function(d){return d[att]})
-						}
+						} 
+						else if(att.match('pqi_name')){y.plot_pqi_name(att,td,cf,dti)}
+						else if(att.match('expected_rate_per_100_000_people')){y.plot_expected_rate_per_100_000_people(att,td,cf,dti)}
+						else if(att.match('expected_rate_per_100_000_people')){y.plot_observed_rate_per_100_000_people(att,td,cf,dti)}
 					}
 					
 				}
@@ -284,7 +233,125 @@ dsrip=(function(){
         
         
     }
-    
+	
+	y.plot_pqi_name=function(att,td,cf,dti){
+		var plotDiv = document.createElement('div');
+		plotDiv.id='plotDiv_'+att
+		//plotDiv.textContent=plotDiv.id;						
+		td.appendChild(plotDiv);
+		// bar chart
+		var rowName = dc.rowChart('#'+plotDiv.id);
+		var nameDim = cf.dimension(function (d){return d[att]});
+		//var nameGroup = nameDim.group().reduce(function(d){return d.observed_rate_per_100_000_people})//.reduceCount(function (d){return d[att]});
+		var nameCounts = openHealth.countUnique(dti.tab[att]);
+		var reduceObj={};
+		openHealth.unique(dti.tab[att]).map(function(a){
+			reduceObj[a]={count:0,val:0}
+		})
+		
+		var reduceAdd = function(p,v){
+			var c = v.pqi_name // category within att
+			reduceObj[c].count++;
+			reduceObj[c].val+=v["observed_rate_per_100_000_people"];
+			return reduceObj[c].val/reduceObj[c].count;
+		}
+		var reduceRemove = function(p,v){
+			var c = v.pqi_name // category within att
+			reduceObj[c].count--;
+			reduceObj[c].val-=v["observed_rate_per_100_000_people"];
+			return reduceObj[c].val/reduceObj[c].count;
+		}
+		var nameGroup = nameDim.group().reduce(
+			reduceAdd,
+			reduceRemove,
+			function(){return 0}
+		)
+		
+		rowName
+			.width(400)
+			//.height(220)
+			.height(nameGroup.size()*30)
+			.margins({top: 5, left: 10, right: 10, bottom: 20})
+			.dimension(nameDim)
+			.group(nameGroup)
+			.title(function(d){return d[att]})
+	}
+	y.plot_expected_rate_per_100_000_people=function(att,td,cf,dti){
+		// assuming that if there is an expected there is also an observed, representing teh ratio as a bubble chart
+		
+		var plotDiv = document.createElement('div');
+		plotDiv.id='plotDiv_'+att
+		//plotDiv.textContent=plotDiv.id;						
+		td.appendChild(plotDiv);
+		var expectRow = dc.rowChart('#'+plotDiv.id);
+		var pqi_nameDim = cf.dimension(function(d){return d.pqi_name});
+		
+		//*
+		var expectGroup_p={};
+		openHealth.unique(dti.tab.pqi_name).map(function(a){
+			expectGroup_p[a]={exp:0,obs:0}
+		})
+		var expectGroup = pqi_nameDim.group().reduce(
+			// add
+			function(p,v){
+				expectGroup_p[v.pqi_name].exp+=v.expected_rate_per_100_000_people;
+				expectGroup_p[v.pqi_name].obs+=v.observed_rate_per_100_000_people;
+				return expectGroup_p[v.pqi_name].obs/expectGroup_p[v.pqi_name].exp;
+			},
+			// remove 
+			function(p,v){
+				expectGroup_p[v.pqi_name].exp-=v.expected_rate_per_100_000_people;
+				expectGroup_p[v.pqi_name].obs-=v.observed_rate_per_100_000_people;
+				return expectGroup_p[v.pqi_name].obs/expectGroup_p[v.pqi_name].exp;
+			},
+			// ini
+			function(p,v){
+				return 0 // initial p
+			}
+		
+		)
+		//*/
+		/*
+		var expectGroup = pqi_nameDim.group().reduce(
+			// add
+			function(p,v){
+				p.exp+=v.expected_rate_per_100_000_people;
+				p.obs+=v.observed_rate_per_100_000_people;
+				p.ratio=p.obs/p.exp
+				//console.log(p.ratio)
+				return p;
+			},
+			// remove 
+			function(p,v){
+				p.exp-=v.expected_rate_per_100_000_people;
+				p.obs-=v.observed_rate_per_100_000_people;
+				p.ratio=p.obs/p.exp
+				return p;
+			},
+			// ini
+			function(p,v){
+				return {exp:0,obs:0} // initial p
+			}
+		
+		)
+		*/
+		
+		expectRow
+			.width(400)
+			.height(expectGroup.size()*30)
+			.margins({top: 5, left: 10, right: 10, bottom: 20})
+			.dimension(pqi_nameDim)
+			.group(expectGroup)
+			//.x(d3.scale.linear().domain([0.8,0.9,1,1.1,1.2]))
+			.title(function(d){return d.pqi_name})
+
+		4
+		
+	}
+	y.plot_observed_rate_per_100_000_people=function(att,td,cf,dti){
+		4
+		// 
+	}
     return y
 })();
 
