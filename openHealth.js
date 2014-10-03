@@ -169,6 +169,22 @@ this.unique=function (x){ // x should be an Array
 	return u;
 }
 
+this.saveFile=function(x,fileName) { // x is the content of the file
+	// var bb = new Blob([x], {type: 'application/octet-binary'});
+	// see also https://github.com/eligrey/FileSaver.js
+	var bb = new Blob([x]);
+   	var url = URL.createObjectURL(bb);
+	var a = document.createElement('a');
+   	a.href=url;
+	if (fileName){
+		if(typeof(fileName)=="string"){ // otherwise this is just a boolean toggle or something of the sort
+			a.download=fileName;
+		}
+		a.click() // then download it automatically 
+	} 
+	return a
+}
+
 this.countUnique=function(x){ // creates object with unique counts for each attribute fount in array x
 	var u = this.unique(x);
 	var c = {};
@@ -176,6 +192,29 @@ this.countUnique=function(x){ // creates object with unique counts for each attr
 	x.map(function(xi){c[xi]++});
 	return c
 }
+
+this.transpose=function (x){ // transposes 2D array
+        if(!Array.isArray(x[0])){y=[x]}  // in case x is a 1D Array
+        else{
+                var y=[],n=x.length,m=x[0].length;
+                for(var j=0;j<m;j++){
+                        y[j]=[];
+                        for(var i=0;i<n;i++){
+                                y[j][i]=x[i][j];
+                        }
+                }
+        }
+        return y
+}
+
+this.max=function(x){ //return maximum value of array
+        return x.reduce(function(a,b){if(a>b){return a}else{return b}})
+}
+
+this.min=function(x){ //return maximum value of array
+        return x.reduce(function(a,b){if(a<b){return a}else{return b}})
+}
+
 
 this.crossdoc2html=function(d){ // create table from cross-document
     var html = '<table>';
