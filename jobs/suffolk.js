@@ -2,9 +2,10 @@ console.log("suffolk.js :-)")
 
 // maps in d3
 // http://bost.ocks.org/mike/map/
+// for a quick fix http://leafletjs.com/ definetely worth a look
+// ["http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js","http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"]
 
-
-openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css","http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js","http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"],function(){ // after satisfying d3 dependency
+openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
     // after dependencies satisfied
     (function(){
         var divJob=document.getElementById('openHealthJob');
@@ -12,7 +13,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         console.log("loading map ...")
         // loading topojson for the whole country first
         
-        openHealth.getJSON("jobs/zips_suffolk_geo.json",function(zipMap){    
+        openHealth.getJSON("jobs/zips_suffolk_HD_geo.json",function(zipMap){    
             /*var zipMap=x;
             console.log("... done");
             // extracting zip codes for Suffolk county
@@ -63,10 +64,10 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                 }
                 var bbox=[openHealth.min(xy[0]),openHealth.min(xy[1]),openHealth.max(xy[0]),openHealth.max(xy[1])]
                 
-                zipMap.features=zipMap.features.map(function(f){
-                    f.bbox=bbox;                 
-                    return f
-                })
+                //zipMap.features=zipMap.features.map(function(f){
+                //    f.bbox=bbox;                 
+                //    return f
+                //})
                 zipMap.bbox=bbox;
                 
                 //var projection = d3.geo.mercator()
@@ -77,10 +78,10 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                 suffolkMap.width(990)
                     .height(500)
                     .dimension(zips)
-                    //.projection(d3.geo.mercator().scale(1000))
+                    .projection(d3.geo.albersUsa().scale(25000).translate([-7200,2200]))
                     .group(total_admits)
                     .overlayGeoJson(zipMap.features, "zips", function (d) {
-                        return d.properties.ZIP;
+                        return d.properties.ZCTA5CE10;
                     })
                     //.projection()
                     
