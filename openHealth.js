@@ -100,14 +100,15 @@ this.soda=function(url,q,fun){ // operate Socrata Open Data API (SODA), http://d
     if(typeof(q)=="function"){fun=q;q=""}
     if(!fun){fun=function(x){console.log(x)}}
     this.getJSON(url+q,fun);
-    return url
+    return this
 }
 this.soda2=function(url,q,fun){ // operate SODA2 services
     if(!url.match("http[s]{0,1}://")){ // if url is not a URL then assume it is an entry of openHealth.sodaData
         url=this.sodaData[url];
     }
     if(typeof(q)=="object"){
-        var qq="?";
+		if(url.match(/\?/)){var qq="&"}
+		else{var qq="?"}
         var F = Object.getOwnPropertyNames(q);
         F.forEach(function(fi){
             qq+='$'+fi+'='+q[fi]+'&';
@@ -115,6 +116,26 @@ this.soda2=function(url,q,fun){ // operate SODA2 services
         q=qq.slice(0,qq.length-1); // remove the last &
     }
     return this.soda(url,q,fun)
+}
+
+this.sodaAll=function(url,q,fun,xx,fun0){ // version of soda2 that keeps reading reccords untill all are retrieved
+	// for example: openHealth.sodaAll("https://health.data.ny.gov/resource/u4ud-w55t.json?hospital_county=Suffolk",false,function(x){y=x;console.log("done")})
+	if(!q){q={}};
+	if(!q.limit){q.limit=10000};
+	if(typeof(q.offset)=="undefined"){q.offset=0}else{q.offset+=q.limit};
+	if(!xx){xx=[]} // the array being assembled throughout multiple calls
+	if(!fun0){fun0=fun} // to carry original fun all eh way to the end
+	var moreFun = function(x){
+		xx=xx.concat(x);
+		console.log([xx.length,x.length,q.limit,q.offset,url])
+		//console.log(xx);
+		//if(lala){
+		if(x.length<q.limit){fun0(xx)} // reached the end of the line, just have the original fun and be done with it
+		else{openHealth.sodaAll(url,q,moreFun,xx,fun0)}
+		//lala=false
+		//}
+	}
+	return this.soda2(url,q,moreFun)
 }
 
 this.docs2tab=function(docs){ // convert array of docs into table
