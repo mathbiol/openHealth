@@ -139,7 +139,7 @@ this.sodaAll=function(url,q,fun,xx,fun0){ // version of soda2 that keeps reading
 }
 
 this.sodas=function(urls,q,fun,xx){ // version of sodaAll with multiple urls, for example, to load from a list of zip codes
-	console.log(urls[0]);
+	//console.log(urls[0]);
 	//var urlsi = urls;
 	if(!xx){xx=[]}
 	if(urls.length>0){ // keep going

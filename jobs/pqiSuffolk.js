@@ -17,9 +17,9 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
             openHealth.getJSON("jobs/zips_suffolk_HD_geo.json",function(zipMap){
                 console.log("map loaded");
                 var C_Map = dc.geoChoroplethChart("#suffolkYearPie");
-                var C_Pie = dc.pieChart("#suffolkChoropleth");
-                var C_Obs = dc.barChart("#suffolkObservedPqi");
-                var C_Exp = dc.barChart("#suffolkExpectedPqi");
+                //var C_Pie = dc.pieChart("#suffolkChoropleth");
+                //var C_Obs = dc.barChart("#suffolkObservedPqi");
+                //var C_Exp = dc.barChart("#suffolkExpectedPqi");
                 
                 
                 var cf=crossfilter(dt);
@@ -46,12 +46,16 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                     .dimension(zips)
                     .projection(d3.geo.albersUsa().scale(28000).translate([-8200,2400]))
                     .group(G_zips)
-                    .overlayGeoJson(zipMap.features, "zips", function (d) {
+                    .overlayGeoJson(zipMap.features, "zip", function (d) {
                         return d.properties.ZCTA5CE10;
                     })
+                    .title(function(d) {
+                        return "zip: " + d.patient_zipcode;
+                    })
+                    .colorAccessor(function(d, i){return Math.random()*1000})
                 dc.renderAll();
                 
-                document.getElementByID("jobMsg").textContent="";
+                document.getElementById("jobMsg").textContent="";
                 
                 4
                 
