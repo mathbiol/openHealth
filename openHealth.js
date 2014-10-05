@@ -138,6 +138,20 @@ this.sodaAll=function(url,q,fun,xx,fun0){ // version of soda2 that keeps reading
 	return this.soda2(url,q,moreFun)
 }
 
+this.sodas=function(urls,q,fun,xx){ // version of sodaAll with multiple urls, for example, to load from a list of zip codes
+	console.log(urls[0]);
+	//var urlsi = urls;
+	if(!xx){xx=[]}
+	if(urls.length>0){ // keep going
+		var funLater=function(x){
+			openHealth.sodas(urls.slice(1),q,fun,x)
+		}
+		this.sodaAll(urls[0],q,funLater,xx)
+	}else{
+		fun(xx);
+	}
+}
+
 this.docs2tab=function(docs){ // convert array of docs into table
     var F = Object.getOwnPropertyNames(docs[0]);
     var m = F.length; // number of fields

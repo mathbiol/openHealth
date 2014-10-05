@@ -5,7 +5,7 @@ console.log("suffolk.js :-)")
 // for a quick fix http://leafletjs.com/ definetely worth a look
 // ["http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js","http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"]
 
-openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css","http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js","http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css"],function(){ // after satisfying d3 dependency
+openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
     // after dependencies satisfied
     (function(){
         var divJob=document.getElementById('openHealthJob');
