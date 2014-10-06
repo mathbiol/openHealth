@@ -14,7 +14,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 			var tab = openHealth.docs2tab(dt);
 			dt=openHealth.tab2docs(tab);
             document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# 5q8c-d6xq)<br> > Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009 <br><span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-            document.getElementById('openHealthJob').innerHTML+='<table><tr><td id="suffolkChoropleth">map goes here</td></tr></table><table><tr><td id="suffolkYearPie">year</td><td id="suffolkObservedPqi">pqi</td><td  id="suffolkExpectedPqi">predicted vs observed</td></tr></table>';
+            document.getElementById('openHealthJob').innerHTML+='<table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi">pqi</td><td  id="suffolkExpectedPqi">predicted vs observed</td></tr></table>';
             
             openHealth.getJSON("jobs/zips_suffolk_HD_geo.json",function(zipMap){
                 console.log("map loaded");
@@ -77,13 +77,15 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					function(){return 0}
             	)
 
-                C_Map.width(990)
+                C_Map.width(800)
                     .height(500)
                     .dimension(zips)
-                    .projection(d3.geo.albersUsa().scale(28000).translate([-8200,2400]))
+                    .projection(d3.geo.albersUsa().scale(28000).translate([-8350,2400]))
                     .group(G_zips)
 					.colors(d3.scale.quantize().range(["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]))
-                    .colorDomain([-100, 2000])
+                    //.colors(d3.scale.quantize().range([d3.rgb(255,0,0).toString(), d3.rgb(255,255,0).toString()]))
+                    //.colors(d3.scale.quantile().range(["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]))
+                    .colorDomain([-100, 1000])
 					.overlayGeoJson(zipMap.features, "zip", function (d) {
                         return d.properties.ZCTA5CE10;
                     })
