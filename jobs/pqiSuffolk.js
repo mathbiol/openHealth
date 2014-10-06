@@ -26,7 +26,31 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                 // Set dimensions and groups
                 var cf=crossfilter(dt);
                 var zips = cf.dimension(function(d){return d.patient_zipcode});
-                var G_zips = zips.group();
+                //var G_zips = zips.group().reduceSum(function(d){return d.observed_rate_per_100_000_people});
+                var G_zips_reduce={};
+				var U_zips = openHealth.unique(tab.patient_zipcode);
+				U_zips.map(function(u){G_zips_reduce[u]={p:0,n:0}})
+				var G_zips = zips.group().reduce(
+					// reduce in
+					function(p,v){
+						G_zips_reduce[v.patient_zipcode].p+=v.observed_rate_per_100_000_people;
+						G_zips_reduce[v.patient_zipcode].n+=1;
+						if(G_zips_reduce[v.patient_zipcode].n>0){return G_zips_reduce[v.patient_zipcode].p/G_zips_reduce[v.patient_zipcode].n}
+						else{return 0}
+					},
+					// reduce out
+					function(p,v){
+						G_zips_reduce[v.patient_zipcode].p-=v.observed_rate_per_100_000_people;
+						G_zips_reduce[v.patient_zipcode].n-=1;
+						if(G_zips_reduce[v.patient_zipcode].n>0){return G_zips_reduce[v.patient_zipcode].p/G_zips_reduce[v.patient_zipcode].n}
+						else{return 0} 
+					},
+					// ini
+					function(){return 0}
+            	)
+                
+                
+                
                 var years = cf.dimension(function(d){return d.year});
                 var G_years = years.group()
 				var pqis = cf.dimension(function(d){return d.pqi_name});
@@ -51,38 +75,26 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					},
 					// ini
 					function(){return 0}
-            )
+            	)
 
-				
-				
-                /*zips.group().reduce(
-                    // reduce in
-                    function(p,v){return Math.random()*1000},
-                    // reduce out
-                    function(p,v){return Math.random()*1000},
-                    // ini
-                    function(){return Math.random()*1000}
-                
-                )*/
-                
-                //var year = cf.dimension(function(d){return d.year});
-                //var pqi = cf.dimension(function(d){return d.pqi_name});
-                
                 C_Map.width(990)
                     .height(500)
                     .dimension(zips)
                     .projection(d3.geo.albersUsa().scale(28000).translate([-8200,2400]))
                     .group(G_zips)
-                    .overlayGeoJson(zipMap.features, "zip", function (d) {
+					.colors(d3.scale.quantize().range(["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]))
+                    .colorDomain([-100, 2000])
+					.overlayGeoJson(zipMap.features, "zip", function (d) {
                         return d.properties.ZCTA5CE10;
                     })
                     .title(function(d) {
                         return "zip: " + d.patient_zipcode;
                     })
-                    //.colorAccessor(function(d, i){
-                    //    console.log(i,d)
-                    //    return Math.random()*1000
-                    //})
+                    .colorAccessor(function(d, i){
+                        console.log(i,d)
+						if(d){return d}
+						else{return 0}
+                    })
                     
                 C_Pie
                     .width(250)
