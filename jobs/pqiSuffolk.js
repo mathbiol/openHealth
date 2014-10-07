@@ -93,7 +93,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                         return d.properties.ZCTA5CE10;
                     })
                     .title(function(d) {
-                        return "zip: " + d.patient_zipcode;
+                        return Math.round(d.value)+" per 100,000 @ zip "+d.key;
                     })
                     .colorAccessor(function(d, i){
 						if(i==0){G_zips.dst=openHealth.memb(G_zips.all().map(function(d){return d.value}))} // update distribution
