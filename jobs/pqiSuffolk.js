@@ -97,7 +97,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                     })
                     .colorAccessor(function(d, i){
 						if(i==0){G_zips.dst=openHealth.memb(G_zips.all().map(function(d){return d.value}))} // update distribution
-                        console.log(i,d)
+                        //console.log(i,d)
 						if(d){return openHealth.memb([d],G_zips.dst)[0]}
 						else{return -1}
                     })
