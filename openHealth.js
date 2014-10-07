@@ -250,6 +250,43 @@ this.min=function(x){ //return maximum value of array
         return x.reduce(function(a,b){if(a<b){return a}else{return b}})
 }
 
+this.sum=function(x){
+	if(Array.isArray(x[0])){return x.map(function(xi){return openHealth.sum(xi)})}
+	else{return x.reduce(function(a,b){return a+b})};
+}
+
+this.sort=function(x){ // [y,I]=sort(x), where y is the sorted array and I contains the indexes
+	x=x.map(function(xi,i){return [xi,i]});
+	x.sort(function(a,b){return a[0]-b[0]});	
+	return this.transpose(x)
+}
+
+this.interp1=function(X,Y,XI){ // linear interpolation, remember X is supposed to be sorted
+	var n = X.length;
+	var YI = XI.map(function(XIi){
+		var i=openHealth.sum(X.map(function(Xi){if (Xi<XIi){return 1}else{return 0}}));
+		if (i==0){return Y[0]} // lower bound
+		else if (i==n){return Y[n-1]} // upper bound
+		else{return (Y[i-1]+(XIi-X[i-1])*(Y[i]-Y[i-1])/(X[i]-X[i-1]))}
+	});
+	return YI
+}
+
+this.memb=function(x,dst){ // builds membership function
+	var n = x.length-1;
+	if(!dst){
+		dst = this.sort(x);
+		Ind=dst[1];
+		dst[1]=dst[1].map(function(z,i){return i/(n)});
+		var y = x.map(function(z,i){return dst[1][Ind[i]]});
+		return dst;
+	}
+	else{ // interpolate y from distributions, dst
+		var y = this.interp1(dst[0],dst[1],x);
+		return y;
+	}
+	
+}
 
 this.crossdoc2html=function(d){ // create table from cross-document
     var html = '<table>';

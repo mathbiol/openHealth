@@ -76,16 +76,19 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					// ini
 					function(){return 0}
             	)
+				
+				G_zips.n=G_zips.all().length;
 
                 C_Map.width(800)
                     .height(500)
                     .dimension(zips)
                     .projection(d3.geo.albersUsa().scale(28000).translate([-8350,2400]))
                     .group(G_zips)
-					.colors(d3.scale.quantize().range(["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]))
+					//.colors(d3.scale.quantize().range(["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]))
                     //.colors(d3.scale.quantize().range([d3.rgb(255,0,0).toString(), d3.rgb(255,255,0).toString()]))
                     //.colors(d3.scale.quantile().range(["#E2F2FF", "#C4E4FF", "#9ED2FF", "#81C5FF", "#6BBAFF", "#51AEFF", "#36A2FF", "#1E96FF", "#0089FF", "#0061B5"]))
-                    .colorDomain([-100, 1000])
+                    //.colorDomain([-100, 1000])
+					.colors(d3.scale.linear().domain([-1,0,0.75,1]).range(["silver","green","yellow","red"]))
 					.overlayGeoJson(zipMap.features, "zip", function (d) {
                         return d.properties.ZCTA5CE10;
                     })
@@ -93,9 +96,10 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                         return "zip: " + d.patient_zipcode;
                     })
                     .colorAccessor(function(d, i){
-                        //console.log(i,d)
-						if(d){return d}
-						else{return 0}
+						if(i==0){G_zips.dst=openHealth.memb(G_zips.all().map(function(d){return d.value}))} // update distribution
+                        console.log(i,d)
+						if(d){return openHealth.memb([d],G_zips.dst)[0]}
+						else{return -1}
                     })
                     
                 C_Pie
