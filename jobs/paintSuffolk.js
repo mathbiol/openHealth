@@ -77,6 +77,11 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 
         		)
 
+        		// Average Key Values
+
+        		res.avgKeyVals=openHealth.avgKeyValues(res.tab,res.parms.parmKey,res.U_keys,res.parms.parmValue);
+        		
+
 
 
 
@@ -87,11 +92,17 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                     .dimension(res.D_Zip)
                     .projection(d3.geo.albersUsa().scale(28000).translate([-8350,2400]))
                     .group(res.G_Zip)
-					//.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","black"]))
+					.colors(d3.scale.linear().domain([0,0.5,1]).range(["green","yellow","red"]))
 					.overlayGeoJson(res.zipMap.features, "zip", function (d) {
 						//console.log(d.properties.ZCTA5CE10)
                         return d.properties.ZCTA5CE10;
                     })
+                    .colorAccessor(function(d, i){
+                    	if (i==0){ // capture the distribution
+							res.C_MapMembs=openHealth.memb(res.G_Zip.all().map(function(x){return x.value}));
+						}
+						return openHealth.memb([d],res.C_MapMembs)
+					})
                     
 				res.C_Row
 					.width(400)
@@ -100,6 +111,17 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					.margins({top: 5, left: 10, right: 10, bottom: 20})
 					.dimension(res.D_Key)
 					.group(res.G_Key)
+					.colors(d3.scale.linear().domain([0,0.9,1.5,2]).range(["white","green","yellow","red"]))
+					.colorAccessor(function(d, i){
+						var avg = res.avgKeyVals[d.key];
+						if(avg==0){avg=d.value/100}
+						return d.value/avg;
+					})
+					.title(function(d){
+						return Math.round(d.value)+' observed, which is '+Math.round(100*d.value/res.avgKeyVals[d.key])+'% of average '+Math.round(res.avgKeyVals[d.key])
+					})
+
+					
 
 				4
 				dc.renderAll();

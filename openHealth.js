@@ -217,6 +217,24 @@ this.unique=function (x){ // x should be an Array
 	return u;
 }
 
+this.avgKeyValue=function(tab,key,val,x){ // find avverage value of a key value pair 
+	// i.e. openHealth.avgKeyValue(paintSuffolk.tab,"Disease state","Septicemia","Rate per 1000")
+	var tabKey = tab[key];
+	tabKeyVal=[];
+	tabKey.map(function(k,i){
+		if(k===val){tabKeyVal.push(tab[x][i])}
+	})
+	return this.sum(tabKeyVal)/tabKeyVal.length
+}
+
+this.avgKeyValues=function(tab,key,vals,x){ // aplies .avgKeyValue to all values
+	var y={}
+	vals.map(function(v){
+		y[v]=openHealth.avgKeyValue(tab,key,v,x)
+	})
+	return y
+}
+
 this.saveFile=function(x,fileName) { // x is the content of the file
 	// var bb = new Blob([x], {type: 'application/octet-binary'});
 	// see also https://github.com/eligrey/FileSaver.js
