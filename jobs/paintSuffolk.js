@@ -46,13 +46,15 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         			function(p,v){
         				res.G_Zips_Reduce[v.Zip].p+=v[res.parms.parmValue];
         				res.G_Zips_Reduce[v.Zip].n+=1;
-        				return res.G_Zips_Reduce[v.Zip].p/res.G_Zips_Reduce[v.Zip].n;
+        				if(res.G_Zips_Reduce[v.Zip].n==0){return 0}
+        				else{return res.G_Zips_Reduce[v.Zip].p/res.G_Zips_Reduce[v.Zip].n}
         			},
         			// reduce out 
         			function(p,v){
         				res.G_Zips_Reduce[v.Zip].p-=v[res.parms.parmValue];
         				res.G_Zips_Reduce[v.Zip].n-=1;
-        				return res.G_Zips_Reduce[v.Zip].p/res.G_Zips_Reduce[v.Zip].n;
+        				if(res.G_Zips_Reduce[v.Zip].n==0){return 0}
+        				else{return res.G_Zips_Reduce[v.Zip].p/res.G_Zips_Reduce[v.Zip].n}
         			},
         			// ini
         			function(){return 0}
@@ -63,13 +65,15 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         			function(p,v){
         				res.G_Keys_Reduce[v[res.parms.parmKey]].p+=v[res.parms.parmValue];
         				res.G_Keys_Reduce[v[res.parms.parmKey]].n+=1;
-        				return res.G_Keys_Reduce[v[res.parms.parmKey]].p/res.G_Keys_Reduce[v[res.parms.parmKey]].n;
+        				if(res.G_Keys_Reduce[v[res.parms.parmKey]].n==0){return 0}
+        				else{return res.G_Keys_Reduce[v[res.parms.parmKey]].p/res.G_Keys_Reduce[v[res.parms.parmKey]].n}
         			},
         			// reduce out 
         			function(p,v){
         				res.G_Keys_Reduce[v[res.parms.parmKey]].p-=v[res.parms.parmValue];
         				res.G_Keys_Reduce[v[res.parms.parmKey]].n-=1;
-        				return res.G_Keys_Reduce[v[res.parms.parmKey]].p/res.G_Keys_Reduce[v[res.parms.parmKey]].n;
+        				if(res.G_Keys_Reduce[v[res.parms.parmKey]].n==0){return 0}
+        				else{return res.G_Keys_Reduce[v[res.parms.parmKey]].p/res.G_Keys_Reduce[v[res.parms.parmKey]].n}
         			},
 
         			// ini
@@ -103,6 +107,9 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 						}
 						return openHealth.memb([d],res.C_MapMembs)
 					})
+					.title(function(d){
+						return d.value
+					})
                     
 				res.C_Row
 					.width(400)
@@ -118,7 +125,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 						return d.value/avg;
 					})
 					.title(function(d){
-						return Math.round(d.value)+' observed, which is '+Math.round(100*d.value/res.avgKeyVals[d.key])+'% of average '+Math.round(res.avgKeyVals[d.key])
+						return Math.round(10*d.value)/10+' observed, which is '+Math.round(100*d.value/res.avgKeyVals[d.key])+'% of average '+Math.round(10*res.avgKeyVals[d.key])/10
 					})
 
 					
