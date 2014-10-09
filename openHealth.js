@@ -50,7 +50,7 @@ this.getJSON=function(url,fun){
         localforage.getItem(key,function(x){
             if(!x){ // if item not found
                 var moreFun = function(x){
-                    var y = JSON.parse(x.target.responseText);
+					var y = JSON.parse(x.target.responseText);
                     fun(y);
                     localforage.setItem(key,y);
                     //console.log('seting '+key);
@@ -152,6 +152,19 @@ this.sodas=function(urls,q,fun,xx){ // version of sodaAll with multiple urls, fo
 	}
 }
 
+this.txt2docs=function(txt){
+	var y = txt.split(/[\n\r]/).map(function(xi){return xi.split(/\t/).map(function(c){return c.replace(/["\,]/g,'')})});
+	var docs=[];
+	var parms = y[0];
+	for(var i=1;i<y.length-1;i++){
+		docs[i-1]={};
+		parms.map(function(p,j){
+			docs[i-1][p]=y[i][j];
+		})
+	}
+	return docs
+}
+
 this.docs2tab=function(docs){ // convert array of docs into table
     var F = Object.getOwnPropertyNames(docs[0]);
     var m = F.length; // number of fields
@@ -164,7 +177,7 @@ this.docs2tab=function(docs){ // convert array of docs into table
             tab[Fj][i]=docs[i][Fj];
         }
         // recognize numeric types
-        if(!tab[Fj].join('').match(/[^\d\.]/g)){
+        if(!tab[Fj].join('').match(/[^\d\.\s]/g)){
             tab[Fj] = tab[Fj].map(function(xi){
                 return parseFloat(xi);
             })
