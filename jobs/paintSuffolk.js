@@ -96,7 +96,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                     .dimension(res.D_Zip)
                     .projection(d3.geo.albersUsa().scale(28000).translate([-8350,2400]))
                     .group(res.G_Zip)
-					.colors(d3.scale.linear().domain([0,0.5,1]).range(["green","yellow","red"]))
+					.colors(d3.scale.linear().domain([0,0.75,1]).range(["green","yellow","red"]))
 					.overlayGeoJson(res.zipMap.features, "zip", function (d) {
 						//console.log(d.properties.ZCTA5CE10)
                         return d.properties.ZCTA5CE10;
