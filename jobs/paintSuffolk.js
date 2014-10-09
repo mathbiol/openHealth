@@ -19,7 +19,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         	res.docs=openHealth.tab2docs(res.tab);
         	res.representOnTheMap=function(){
         		console.log('3. representing on the Map');
-        		document.getElementById("parameterChoice").innerHTML=' > under development .. come back by the end of the afternoon';
+        		document.getElementById("parameterChoice").innerHTML='<span style="color:red"> > under development .. come back by the end of the afternoon</span>';
 
         	}
 
