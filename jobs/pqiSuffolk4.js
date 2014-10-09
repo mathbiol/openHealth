@@ -5,7 +5,7 @@ console.log("pqiSuffolk.js")
 // census key 70e1b1791514aa106d1fd5b2a66d12aa08cf9b0d
 
 // start with the dependencies
-openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css","jobs/zips_suffolk.js"],function(){ // after satisfying d3 dependency
+openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
 
 	
     pqi=(function(){
