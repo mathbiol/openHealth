@@ -239,20 +239,21 @@ this.avgKeyValues=function(tab,key,vals,x){ // aplies .avgKeyValue to all values
 	return y
 }
 
-this.countKeyValue=function(tab,key,val,x){ // find avverage value of a key value pair 
-	// i.e. openHealth.avgKeyValue(paintSuffolk.tab,"Disease state","Septicemia","Rate per 1000")
+this.countKeyValue=function(tab,key,val,x){ // count entries of a key value pair 
+	// i.e. openHealth.countKeyValue(paintSuffolk.tab,"Disease state","Septicemia","Rate per 1000")
 	var tabKey = tab[key];
 	tabKeyVal=[];
+	i=0;
 	tabKey.map(function(k,i){
-		if(k===val){tabKeyVal.push(tab[x][i])}
+		if(k===val){i++}
 	})
-	return tabKeyVal.length
+	return i
 }
 
 this.countKeyValues=function(tab,key,vals,x){ // aplies .avgKeyValue to all values
 	var y={}
 	vals.map(function(v){
-		y[v]=openHealth.avgKeyValue(tab,key,v,x)
+		y[v]=openHealth.countKeyValue(tab,key,v,x)
 	})
 	return y
 }
