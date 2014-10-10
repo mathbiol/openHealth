@@ -153,14 +153,18 @@ this.sodas=function(urls,q,fun,xx){ // version of sodaAll with multiple urls, fo
 }
 
 this.txt2docs=function(txt){
-	var y = txt.split(/[\n\r]/).map(function(xi){return xi.split(/\t/).map(function(c){return c.replace(/["\,]/g,'')})});
-	var docs=[];
-	var parms = y[0];
-	for(var i=1;i<y.length-1;i++){
-		docs[i-1]={};
-		parms.map(function(p,j){
-			docs[i-1][p]=y[i][j];
-		})
+	if (txt[0]=='['){ // txt is json
+		var docs = JSON.parse(txt);
+	} else { //txt should be tab delimited text
+		var y = txt.split(/[\n\r]/).map(function(xi){return xi.split(/\t/).map(function(c){return c.replace(/["\,]/g,'')})});
+		var docs=[];
+		var parms = y[0];
+		for(var i=1;i<y.length-1;i++){
+			docs[i-1]={};
+			parms.map(function(p,j){
+				docs[i-1][p]=y[i][j];
+			})
+		}
 	}
 	return docs
 }
@@ -233,6 +237,30 @@ this.avgKeyValues=function(tab,key,vals,x){ // aplies .avgKeyValue to all values
 		y[v]=openHealth.avgKeyValue(tab,key,v,x)
 	})
 	return y
+}
+
+this.countKeyValue=function(tab,key,val,x){ // find avverage value of a key value pair 
+	// i.e. openHealth.avgKeyValue(paintSuffolk.tab,"Disease state","Septicemia","Rate per 1000")
+	var tabKey = tab[key];
+	tabKeyVal=[];
+	tabKey.map(function(k,i){
+		if(k===val){tabKeyVal.push(tab[x][i])}
+	})
+	return tabKeyVal.length
+}
+
+this.countKeyValues=function(tab,key,vals,x){ // aplies .avgKeyValue to all values
+	var y={}
+	vals.map(function(v){
+		y[v]=openHealth.avgKeyValue(tab,key,v,x)
+	})
+	return y
+}
+
+this.list=function(x){
+	for(var i=0;i<x.length;i++){
+		console.log(i+1,x[i])
+	}
 }
 
 this.saveFile=function(x,fileName) { // x is the content of the file
