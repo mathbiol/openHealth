@@ -27,7 +27,8 @@ dsrip=(function(){
             D.splice(i,1);
         } else {
             var Lid = String.fromCharCode(65+j);
-            println('<button style="color:navy" onclick="dsrip.dataButton(this)">'+Lid+'</button> ['+D[i]+']('+openHealth.sodaData[D[i]]+')');
+            var URIi = openHealth.sodaData[D[i]];
+            println('<button style="color:navy" onclick="dsrip.dataButton(this)">'+Lid+'</button> ['+D[i]+']('+URIi.slice(0,URIi.length-5)+')');
             y.dt[Lid]={
                 title:D[i],
                 url:openHealth.sodaData[D[i]],
