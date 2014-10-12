@@ -40,7 +40,7 @@ s.loadData(function(x){
 		$('#parm1').append('<option value="'+u+'">'+u+'</option>')
 		$('#parm2').append('<option value="'+u+'">'+u+'</option>')
 	})
-	$("#openHealthJob").append('<hr><div id="allPatients"><h3>All patients</h3></div></hr><hr><h3>Medicaid patients</h3><div id="medicaidPatients"></div></hr>');
+	$("#openHealthJob").append('<hr><div id="allPatients"><h3>All patients</h3></div></hr><hr><div id="medicaidPatients"><h3>Medicaid patients</h3></div></hr>');
 	var bt = document.getElementById('tabulate')
 	document.getElementById('parm1').value='ccs_procedure_description'
 	document.getElementById('parm2').value='facility_name'
