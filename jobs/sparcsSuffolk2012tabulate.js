@@ -46,6 +46,7 @@ s.loadData(function(x){
 	document.getElementById('parm2').value='facility_name'
 	bt.onclick=function(){
 		$('#allPatients').html("<h3>All patients</h3>")
+		$('#medicaidPatients').html("<h3>Medicaid patients</h3>")
 		var selParm1 = document.getElementById('parm1').value;
 		var selParm2 = document.getElementById('parm2').value;
 		var Up1 = openHealth.unique(s.tab[selParm1])
