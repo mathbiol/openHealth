@@ -87,7 +87,8 @@ this.sodaData={ // some reference SODA data links
     "DSRIP Medicaid Potentially Preventable Emergency Visit (PPV) Rates by Patient County: Beginning 2011":"https://health.data.ny.gov/resource/cr7a-34ka.json",
     "DSRIP Medicaid Potentially Preventable Emergency Visits (PPV) by Patient Zip Code: Beginning 2011":"https://health.data.ny.gov/resource/khkm-zkp2.json",
     "DSRIP Medicaid Inpatient Prevention Quality Indicators (PDI) for Pediatric Discharges by Patient County: Beginning 2011":"https://health.data.ny.gov/resource/64yg-akce.json",
-	"DSRIP Medicaid Program Enrollment by Month: Beginning 2009":"https://health.data.ny.gov/resource/m4hz-kzn3.json"
+	"DSRIP Medicaid Program Enrollment by Month: Beginning 2009":"https://health.data.ny.gov/resource/m4hz-kzn3.json",
+    "DSRIP Hospital Inpatient Discharges (SPARCS De-Identified): 2012":"https://health.data.ny.gov/resource/u4ud-w55t.json"
     //"Medicaid Inpatient Prevention Quality Indicators (PDI) for Pediatric Discharges by Patient County: Beginning 2011":"http://health.data.ny.gov/resource/64yg-akce.json",
     // MIS
     // "NY DSRIP Discharge":"http://health.data.ny.gov/resource/ckvf-rbyn.json"
@@ -348,7 +349,50 @@ this.memb=function(x,dst){ // builds membership function
 	
 }
 
-this.crossdoc2html=function(d){ // create table from cross-document
+this.tabulateCount=function(tab,p1,p2,Up1,Up2){//tabulate parameter p1 against p2, optional: arrays with unique values
+	if(Array.isArray(tab)){tab=this.tab2docs(tab)} // in case an array of docs is being submitted
+	if(!Up1){Up1 = this.unique(tab[p1])}
+	if(!Up2){Up2 = this.unique(tab[p2])}
+	var tabcount={}
+	// prepare table structure
+	Up1.map(function(p1){
+		tabcount[p1]={}
+		Up2.map(function(p2){
+			tabcount[p1][p2]=0			
+		})
+	})
+	var j=0
+	for(var i=0;i<tab[p1].length;i++){
+		tabcount[tab[p1][i]][tab[p2][i]]+=1
+		j++
+	}
+	console.log(j+' counted')
+	return tabcount
+}
+
+this.crossdoc2csv=function(d,title){
+	if(!title){title=Date()+'.csv'}
+	var csv=title;
+	// header
+	var rr=Object.getOwnPropertyNames(d).sort(); //rows
+	var cc=Object.getOwnPropertyNames(d[rr[0]]).sort() //columns
+	cc.map(function(p1){
+		csv+=','+p1
+	})
+	csv+='\n'
+	// body
+	rr.map(function(p1){
+		csv+=p1;
+		cc.map(function(p2){
+			csv+=','+d[p1][p2];
+		})
+		csv+='\n'
+	})
+	return csv
+}
+
+this.crossdoc2html=function(d,title){ // create table from cross-document
+	if(!title){title=Date()+'.csv'}
     var html = '<table>';
     var rows = Object.getOwnPropertyNames(d);
     var cols = [""].concat(Object.getOwnPropertyNames(d[rows[0]]));
@@ -364,8 +408,23 @@ this.crossdoc2html=function(d){ // create table from cross-document
         html +='</tr>';
     }    
     html += '</table>';
-    return html;
+	// download button
+	var div = document.createElement('div');
+	div.innerHTML=html;
+	var bt = document.createElement('input');
+	bt.type = "button";
+	bt.value = "download"
+	//lala = bt;
+	bt.d=d;// the data
+	bt.onclick=function(){
+		openHealth.saveFile(openHealth.crossdoc2csv(this.d,title),title)
+		//console.log(this)
+	}
+	div.appendChild(bt)
+    return div;
 }
+
+
 
 this.markdown=function(x){ // basic markdown2html
     x = x.replace(/\[([^\]]+)\]\(([^\)]+)\)/g,'<a href="$2" target=_blank>$1</a>'); // links
