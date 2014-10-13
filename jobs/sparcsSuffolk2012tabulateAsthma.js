@@ -40,7 +40,7 @@ s.loadData(function(x){
 		$('#parm1').append('<option value="'+u+'">'+u+'</option>')
 		$('#parm2').append('<option value="'+u+'">'+u+'</option>')
 	})
-	$("#openHealthJob").append('<hr><div id="allPatients"><h3>All patients</h3></div></hr><hr><div id="medicaidPatients"><h3>Medicaid patients</h3></div></hr>');
+	$("#openHealthJob").append('<hr><div id="allPatients"><h3>All Asthma patients</h3></div></hr><hr><div id="medicaidPatients"><h3>Medicaid Asthma patients</h3></div></hr>');
 	var bt = document.getElementById('tabulate')
 	document.getElementById('parm1').value='ccs_procedure_description'
 	document.getElementById('parm2').value='facility_name'
@@ -53,11 +53,11 @@ s.loadData(function(x){
 		var Up2 = openHealth.unique(s.tab[selParm2])
 		$('#allPatients').append(openHealth.crossdoc2html(
 			openHealth.tabulateCount(s.tab,selParm1,selParm2,Up1,Up2),
-			'counts of '+selParm1+' vs '+selParm2+' for all patients.csv'
+			'counts of '+selParm1+' vs '+selParm2+' for all Asthma patients.csv'
 		));
 		$('#medicaidPatients').append(openHealth.crossdoc2html(
 			openHealth.tabulateCount(s.medicaid.tab,selParm1,selParm2,Up1,Up2),
-			'counts of '+selParm1+' vs '+selParm2+' for Medicaid patients.csv'
+			'counts of '+selParm1+' vs '+selParm2+' for Medicaid Asthma patients.csv'
 		));
 		
 		//console.log(Date(),this)

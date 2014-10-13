@@ -376,13 +376,13 @@ this.crossdoc2csv=function(d,title){
 	// header
 	var rr=Object.getOwnPropertyNames(d).sort(); //rows
 	var cc=Object.getOwnPropertyNames(d[rr[0]]).sort() //columns
-	cc.map(function(p1){
-		csv+=','+p1
+	cc.map(function(p2){
+		csv+=','+p2.replace(/[;,]/g,' ')
 	})
 	csv+='\n'
 	// body
 	rr.map(function(p1){
-		csv+=p1;
+		csv+=p1.replace(/[;,]/g,' ');
 		cc.map(function(p2){
 			csv+=','+d[p1][p2];
 		})

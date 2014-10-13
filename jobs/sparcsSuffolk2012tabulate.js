@@ -45,8 +45,8 @@ s.loadData(function(x){
 	document.getElementById('parm1').value='ccs_procedure_description'
 	document.getElementById('parm2').value='facility_name'
 	bt.onclick=function(){
-		$('#allPatients').html("<h3>All patients</h3>")
-		$('#medicaidPatients').html("<h3>Medicaid patients</h3>")
+		$('#allPatients').html("<h3>All patients ("+s.docs.length+")</h3>")
+		$('#medicaidPatients').html("<h3>Medicaid patients ("+s.medicaid.docs.length+")</h3>")
 		var selParm1 = document.getElementById('parm1').value;
 		var selParm2 = document.getElementById('parm2').value;
 		var Up1 = openHealth.unique(s.tab[selParm1])
