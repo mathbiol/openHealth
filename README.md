@@ -23,12 +23,16 @@ A substancial number of Open Health Data resources are delivered through [Socrat
 
 * openHealth.soda("URL or URL reference",fun)
 ```` javascript
-// deliver that data to the console
+// deliver first 1,000 entries that data to the console
 openHealth.soda("NY Medicare Inpatient") 
 // deliver that data to a global variable NYmed
 openHealth.soda("NY Medicare Inpatient",function(x){NYmed=x;console.log("done")})
 // same data, using the URL directly
 openHealth.soda("http://health.data.ny.gov/resource/2yck-xisk.json") 
+// now get all 31,895 records in that dataset, in gulps of 10,000.
+// the undefined second argument indicates no query constraints. It could be, for example, {limit:2000} 
+openHealth.sodas("NY Medicare Inpatient",undefined,function(x){NYmed=x;console.log("done")})
+// etc ...
 // for list of URL references for SODA data see
 openHealth.sodaData
 ````

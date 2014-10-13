@@ -69,7 +69,7 @@ this.getJSON=function(url,fun){
 this.getJSON.cache=true
 
 this.sodaData={ // some reference SODA data links 
-    // "NY Medicare Inpatient":"http://health.data.ny.gov/resource/2yck-xisk.json",
+    "NY Medicare Inpatient":"http://health.data.ny.gov/resource/2yck-xisk.json",
     // DSRIP NY
     // Hospital Inpatient Prevention Quality Indicators
     "DSRIP Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beginning 2009":"https://health.data.ny.gov/resource/5q8c-d6xq.json",
@@ -142,6 +142,7 @@ this.sodaAll=function(url,q,fun,xx,fun0){ // version of soda2 that keeps reading
 this.sodas=function(urls,q,fun,xx){ // version of sodaAll with multiple urls, for example, to load from a list of zip codes
 	//console.log(urls[0]);
 	//var urlsi = urls;
+	if(typeof(urls)=="string"){urls=[urls]} // so it can handle a single url too
 	if(!xx){xx=[]}
 	if(urls.length>0){ // keep going
 		var funLater=function(x){
