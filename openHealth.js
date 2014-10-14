@@ -399,13 +399,13 @@ this.crossdoc2html=function(d,title){ // create table from cross-document
     var cols = [""].concat(Object.getOwnPropertyNames(d[rows[0]]));
     // header
     html +='<tr>';
-    for(j=0;j<cols.length;j++){html+='<th>'+cols[j]+'</th>'};
+    for(j=0;j<cols.length;j++){html+='<th style="text-align:right">'+cols[j]+'</th>'};
     html +='</tr>';
     // body
     for(i=0;i<rows.length;i++){
         html +='<tr>';
         html +='<th>'+rows[i]+'</th>'; // row label
-        for(j=1;j<cols.length;j++){html+='<td>'+d[rows[i]][cols[j]]+'</td>'}
+        for(j=1;j<cols.length;j++){html+='<td style="text-align:right">'+d[rows[i]][cols[j]]+'</td>'}
         html +='</tr>';
     }    
     html += '</table>';
