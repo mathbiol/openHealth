@@ -394,7 +394,7 @@ this.crossdoc2csv=function(d,title){
 
 this.crossdoc2html=function(d,title){ // create table from cross-document
 	if(!title){title=Date()+'.csv'}
-    var html = '<table border=1>';
+    var html = '<table border=1 style="color:navy">';
     var rows = Object.getOwnPropertyNames(d);
     var cols = [""].concat(Object.getOwnPropertyNames(d[rows[0]]));
     // header
@@ -405,7 +405,7 @@ this.crossdoc2html=function(d,title){ // create table from cross-document
     for(i=0;i<rows.length;i++){
         html +='<tr>';
         html +='<th>'+rows[i]+'</th>'; // row label
-        for(j=1;j<cols.length;j++){html+='<td style="text-align:right">'+d[rows[i]][cols[j]]+'</td>'}
+        for(j=1;j<cols.length;j++){html+='<td style="text-align:right;color:blue">'+d[rows[i]][cols[j]]+'</td>'}
         html +='</tr>';
     }    
     html += '</table>';
