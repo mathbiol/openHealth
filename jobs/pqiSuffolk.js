@@ -5,7 +5,7 @@ console.log("pqiSuffolk.js")
 // census key 70e1b1791514aa106d1fd5b2a66d12aa08cf9b0d
 
 // start with the dependencies
-openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
+openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css","jobs/zipSuffolkPop.js"],function(){ // after satisfying d3 dependency
 
 	
     pqi=(function(){
@@ -17,9 +17,15 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 			dt=openHealth.tab2docs(tab);
 			res.dt=dt
             document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<br> > Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009 <br><span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-            document.getElementById('openHealthJob').innerHTML+='<table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi"></td></tr></table>';
+            document.getElementById('openHealthJob').innerHTML+='<table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table>';
             
             openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",function(zipMap){
+            	pqi.zipMap=zipMap;
+            	pqi.zipProperties={};
+            	zipMap.features.map(function(zi){
+            		pqi.zipProperties[zi.properties.ZCTA5CE10]=zi.properties;
+            	})
+
                 console.log("map loaded");
                 var C_Map = dc.geoChoroplethChart("#suffolkChoropleth");
                 var C_Pie = dc.pieChart("#suffolkYearPie");

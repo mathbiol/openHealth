@@ -3,6 +3,8 @@ console.log("openHealth loaded")
 openHealth=function(){}
 openHealth.ini=function(){
 this.buildUI=function(){};
+this.data={}; // <-- put your data here
+this.plugins={}; // <-- put your plugins here
 this.getScript=function(src,fun){
     if(Array.isArray(src)){ // multiple scripts are being loaded
         if(src.length==1){
@@ -34,6 +36,7 @@ this.getScript=function(src,fun){
 
 this.xhr=function(url,meth,fun){ // XMLHttpRequest
     if(typeof(meth)=="function"){fun=meth;meth="GET"} // in case this is a regular GET call
+    if(!meth){meth="GET"}
     var r = new XMLHttpRequest();
     if(!!fun){r.onload=fun}; // calback
     r.open(meth,url,true);
@@ -62,11 +65,32 @@ this.getJSON=function(url,fun){
             }
         })
         
-    }
-    
+    }   
 }
-
 this.getJSON.cache=true
+
+this.getText=function(url,fun){    
+    if(!this.getText.cache){ // if caching not enabled
+        this.xhr(url,function(x){fun(x.target.responseText)});
+    } else {
+        var key = encodeURIComponent(url);
+        localforage.getItem(key,function(x){
+            if(!x){ // if item not found
+                var moreFun = function(x){
+					var y = x.target.responseText;
+                    fun(y);
+                    localforage.setItem(key,y);
+                    //console.log('seting '+key);
+                }
+                openHealth.xhr(url,moreFun);
+            } else {
+                fun(x);
+                //console.log('got '+key);
+            }
+        })   
+    }   
+}
+this.getText.cache=false
 
 this.sodaData={ // some reference SODA data links 
     "NY Medicare Inpatient":"http://health.data.ny.gov/resource/2yck-xisk.json",
