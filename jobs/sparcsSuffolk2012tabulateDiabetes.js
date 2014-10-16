@@ -36,9 +36,9 @@ s.loadData(function(x){
 	})
 	s.medicaid.tab=openHealth.docs2tab(s.medicaid.docs)
 	console.log(s.medicaid.docs.length+" Medicaid entries found")
-	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Diabetes</b> (ccs_diagnosis_code=128) entries in the public data <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Discharges-SPARCS-De-Identified/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county, <b style="color:blue">'+s.medicaid.docs.length+'</b> of which from Medicaid patients</p>')
+	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Diabetes</b> (ccs_diagnosis_codes 49,50,186) entries in the public data <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Discharges-SPARCS-De-Identified/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county, <b style="color:blue">'+s.medicaid.docs.length+'</b> of which from Medicaid patients</p>')
 	$("#openHealthJob").append('<h4> Cross-tabulation counts for all entries and also for Medicat entries only: </h4>')
-	$("#openHealthJob").append('<p> Count <select id="parm1"></select> against <select id="parm2"></select><input id="tabulate" type="button" value="Tabulate"></p>')
+	$("#openHealthJob").append('<p> Count <select id="parm1"></select> against <select id="parm2"></select>: <input id="tabulate" type="button" value="Tabulate"></p>')
 	s.Uparms = Object.getOwnPropertyNames(s.tab).sort();
 	s.Uparms.map(function(u){
 		$('#parm1').append('<option value="'+u+'">'+u+'</option>')
