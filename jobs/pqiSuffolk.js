@@ -30,7 +30,8 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                 var C_Map = dc.geoChoroplethChart("#suffolkChoropleth");
                 var C_Pie = dc.pieChart("#suffolkYearPie");
                 var C_Obs = dc.rowChart("#suffolkObservedPqi");
-                
+                var C_Exp = dc.bubbleChart("#suffolkExpectedPqi");
+				
                 
                 // Set dimensions and groups
                 var cf=crossfilter(dt);
@@ -69,8 +70,10 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 				var pqis = cf.dimension(function(d){return d.pqi_name});
 				//var G_Observed = pqis.group().reduceSum(function(d){return d.observed_rate_per_100_000_people})
 				res.G_Observed_reduce={};
+				res.G_Expect_reduce={};
 				res.U_pqis = openHealth.unique(tab.pqi_name).sort();
 				res.U_pqis.map(function(u){res.G_Observed_reduce[u]={p:0,expt:0,n:0}})
+				res.U_pqis.map(function(u){res.G_Expect_reduce[u]={p:0,expt:0,n:0}})
 				var G_Observed = pqis.group().reduce(
 					// reduce in
 					function(p,v){
@@ -90,6 +93,33 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 						res.G_Observed_reduce[v.pqi_name].n-=1;
 						res.G_Observed_reduce[v.pqi_name].ratio=res.G_Observed_reduce[v.pqi_name].p/res.G_Observed_reduce[v.pqi_name].expt;
 						if(res.G_Observed_reduce[v.pqi_name].n>0){return res.G_Observed_reduce[v.pqi_name].p/res.G_Observed_reduce[v.pqi_name].n}
+						else{return 0}
+						//return res.G_Observed_reduce[v.pqi_name].p/res.G_Observed_reduce[v.pqi_name].expt
+					},
+					// ini
+					function(){return 0}
+            	)
+
+            	var expects = cf.dimension(function(d){return d.patient_zipcode}); // because we'll be bubling by zip code
+                var G_expects = expects.group().reduce(
+					// reduce in
+					function(p,v){
+						res.G_Expect_reduce[v.pqi_name].p+=v.observed_rate_per_100_000_people;
+						res.G_Expect_reduce[v.pqi_name].expt+=v.expected_rate_per_100_000_people;
+						res.G_Expect_reduce[v.pqi_name].n+=1;
+						res.G_Expect_reduce[v.pqi_name].ratio=res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt;
+						if(res.G_Expect_reduce[v.pqi_name].n>0){return res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].n}
+						else{return 0}
+						//return res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt
+						
+					},
+					// reduce out
+					function(p,v){
+						res.G_Expect_reduce[v.pqi_name].p-=v.observed_rate_per_100_000_people;
+						res.G_Expect_reduce[v.pqi_name].expt-=v.expected_rate_per_100_000_people;
+						res.G_Expect_reduce[v.pqi_name].n-=1;
+						res.G_Expect_reduce[v.pqi_name].ratio=res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt;
+						if(res.G_Expect_reduce[v.pqi_name].n>0){return res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].n}
 						else{return 0}
 						//return res.G_Observed_reduce[v.pqi_name].p/res.G_Observed_reduce[v.pqi_name].expt
 					},
@@ -194,24 +224,25 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					return [openHealth.min(zz),openHealth.max(zz)]
 				}
 				
-				var C_Exp = dc.bubbleChart("#suffolkExpectedPqi");
 				C_Exp
 					.width(G_Observed.size()*30)
 					.height(G_Observed.size()*30)
 					.margins({top: 10, right: 50, bottom: 30, left: 40})
 					.transitionDuration(1500)
-					.dimension(zips)
-					.group(G_zips)
+					.dimension(expects)
+					.group(G_expects)
 					.x(d3.scale.linear().domain(getMinMax('expt')))
 					.y(d3.scale.linear().domain(getMinMax('p')))
 					.elasticY(true)
         			.elasticX(true)
 					.r(d3.scale.linear().domain([0, 4000]))
 					.keyAccessor(function (r) { 			// <-- X values
-						return G_zips_reduce[r.key].expt/G_zips_reduce[r.key].n
+						if(G_zips_reduce[r.key].n){return G_zips_reduce[r.key].expt/G_zips_reduce[r.key].n}
+						else{return 0}
 					})
-					.valueAccessor(function (r) { 			// <-- X values
-						return G_zips_reduce[r.key].p/G_zips_reduce[r.key].n
+					.valueAccessor(function (r) { 			// <-- Y values
+						if(G_zips_reduce[r.key].n){return G_zips_reduce[r.key].p/G_zips_reduce[r.key].n}
+						else{return 0}
 					})
 					.radiusValueAccessor(function (r) { 			// <-- X values
 						//console.log(r,openHealth.data.suffolkCounty.zipPop[r.key])
@@ -224,7 +255,8 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					})
 					.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","brown"]))
 					.colorAccessor(function (d) {
-            			return d.value
+            			//return d.value
+            			return G_zips_reduce[d.key].p/G_zips_reduce[d.key].expt
         			})
 					.xAxisLabel('Expected, per 100,000')
 					.yAxisLabel('Observed, per 100,000')
@@ -233,6 +265,13 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         			.yAxisPadding(10)
         			.xAxisPadding(10)
         			.maxBubbleRelativeSize(0.3)
+        			.label(function (p) {
+        				if(openHealth.data.suffolkCounty.zipPop[p.key]){
+        					return openHealth.data.suffolkCounty.zipPop[p.key].name+' ('+p.key+')'
+        				} else {
+        					return p.key;
+        				}
+        			})
         
         
 
