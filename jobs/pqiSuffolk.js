@@ -17,9 +17,9 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 			dt=openHealth.tab2docs(tab);
 			res.dt=dt
             document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<h4 style="color:navy">Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009</h4> <span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-            document.getElementById('openHealthJob').innerHTML+='<table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table>';
+            document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><div id="numTable"></div>';
             
-            openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",function(zipMap){
+            renderAll=function(zipMap){
             	pqi.zipMap=zipMap;
             	pqi.zipProperties={};
             	zipMap.features.map(function(zi){
@@ -41,10 +41,25 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                 var G_zips_reduce={};
 				res.U_zips = openHealth.unique(tab.patient_zipcode).sort();
 				var U_years = openHealth.unique(tab.year).sort();
+				res.U_pqis = openHealth.unique(tab.pqi_name).sort();
 				res.U_zips.map(function(u){G_zips_reduce[u]={p:0,n:0,expt:0}})
+				res.tabela={};
+				res.U_zips.map(function(z){
+					res.tabela[z]={};
+					res.U_pqis.map(function(p){
+						res.tabela[z][p]={
+							observed_rate_per_100_000_people:0,
+							expected_rate_per_100_000_people:0,
+							n:0
+						};
+					})
+				})
 				var G_zips = zips.group().reduce(
 					// reduce in
 					function(p,v){
+						pqi.tabela[v.patient_zipcode][v.pqi_name].observed_rate_per_100_000_people+=v.observed_rate_per_100_000_people;
+						pqi.tabela[v.patient_zipcode][v.pqi_name].expected_rate_per_100_000_people+=v.expected_rate_per_100_000_people;
+						pqi.tabela[v.patient_zipcode][v.pqi_name].n+=1;
 						G_zips_reduce[v.patient_zipcode].p+=v.observed_rate_per_100_000_people;
 						G_zips_reduce[v.patient_zipcode].expt+=v.expected_rate_per_100_000_people;
 						G_zips_reduce[v.patient_zipcode].n+=1;
@@ -54,6 +69,9 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					},
 					// reduce out
 					function(p,v){
+						pqi.tabela[v.patient_zipcode][v.pqi_name].observed_rate_per_100_000_people-=v.observed_rate_per_100_000_people;
+						pqi.tabela[v.patient_zipcode][v.pqi_name].expected_rate_per_100_000_people-=v.expected_rate_per_100_000_people;
+						pqi.tabela[v.patient_zipcode][v.pqi_name].n-=1;
 						G_zips_reduce[v.patient_zipcode].p-=v.observed_rate_per_100_000_people;
 						G_zips_reduce[v.patient_zipcode].expt-=v.expected_rate_per_100_000_people;
 						G_zips_reduce[v.patient_zipcode].n-=1;
@@ -94,7 +112,6 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 				//var G_Observed = pqis.group().reduceSum(function(d){return d.observed_rate_per_100_000_people})
 				res.G_Observed_reduce={};
 				res.G_Expect_reduce={};
-				res.U_pqis = openHealth.unique(tab.pqi_name).sort();
 				res.U_pqis.map(function(u){res.G_Observed_reduce[u]={p:0,expt:0,n:0}})
 				res.U_zips.map(function(u){res.G_Expect_reduce[u]={p:0,expt:0,n:0,x:0,y:0}})
 				var G_Observed = pqis.group().reduce(
@@ -182,6 +199,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                         }
                     })
 					.colorAccessor(function(d, i){
+						
 						if(d){return d}
 						else{return -1}
 					})
@@ -203,6 +221,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					.group(G_years)
 					.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","brown"]))
 					.colorAccessor(function(d, i){
+						
 						if(res.G_years_reduce[d.key].expt){return res.G_years_reduce[d.key].obs/res.G_years_reduce[d.key].expt}
 						else {return 0}
                 	})
@@ -217,6 +236,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					.group(G_Observed)
 					.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","brown"]))
 					.colorAccessor(function(d, i){
+						
 						/*
 						if (i==0){ // capture the distribution
 							res.ObsExp=[];
@@ -278,13 +298,15 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 						//console.log(r,openHealth.data.suffolkCounty.zipPop[r.key])
 						//if(openHealth.data.suffolkCounty.zipPop[r.key])
 						if(openHealth.data.suffolkCounty.zipPop[r.key]){
-							return Math.sqrt(openHealth.data.suffolkCounty.zipPop[r.key].pop)
+							//return Math.sqrt(openHealth.data.suffolkCounty.zipPop[r.key].pop)
+							return openHealth.data.suffolkCounty.zipPop[r.key].pop/200
 						} else {return 0}
 						
 						//return G_zips_reduce[r.key].p/G_zips_reduce[r.key].expt
 					})
 					.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","brown"]))
 					.colorAccessor(function (d,i) {
+						
             			//return d.value
             			if(pqi.G_Expect_reduce[d.key]){
             				if(pqi.G_Expect_reduce[d.key].expt){
@@ -314,6 +336,8 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 
                 
                 dc.renderAll();
+                pqi.tabelaFun();
+                pqi.cTabDiv.hidden="false"
                 
                 // post-charting
 				
@@ -323,10 +347,50 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                 
                 res.G_zips_reduce=G_zips_reduce;
 				res.charts={C_Map:C_Map,C_Pie:C_Pie,C_Obs:C_Obs,G_zips:G_zips,G_Observed:G_Observed,G_years:G_years}//,C_Exp:C_Exp}
+				var btReset=document.getElementById('dcReset');
+	            btReset.onclick=function(){
+    	        	document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<h4 style="color:navy">Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009</h4> <span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
+        	    	document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><div id="numTable"></div>';
+            		openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",renderAll)
+            	}
+				
                 
-            })
+            }
+
+
+            openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",renderAll) // <-- it all starts here
             
-            
+            res.tabelaFun=function(){//creates crossdocument
+            	var tab = JSON.parse(JSON.stringify(this.tabela)) // clone object
+            	var U_zips = this.U_zips, U_pqis = this.U_pqis;
+            	var cTab={}
+            	U_zips.map(function(z){
+            		//tab[z].n=0
+            		//U_pqis.map(function(p){
+            		//	tab[z].n+=tab[z][p].n
+            		//})
+            		if(openHealth.data.suffolkCounty.zipPop[z]){
+            			var zi=z+' '+openHealth.data.suffolkCounty.zipPop[z].name+' (pop '+openHealth.data.suffolkCounty.zipPop[z].pop+')';
+            			cTab[zi]={}
+						U_pqis.map(function(p){
+            				if(tab[z][p].n>0){
+            					//cTab[zi][p]=tab[z][p].n
+            					cTab[zi][p]=Math.round(tab[z][p].observed_rate_per_100_000_people/tab[z][p].n)+' / '+Math.round(tab[z][p].expected_rate_per_100_000_people/tab[z][p].n)//+' ('+tab[z][p].n+')'
+            				}
+            			})
+            		}
+            		
+            	})
+            	// tabulate it:
+            	tabDiv = document.getElementById('numTable');
+            	tabDiv.innerHTML='<hr><h3 tabelaHeader>Observed / expected <input type="button" value="tabulate" id=genTable></h3>';
+            	//var genTableFun=
+            	pqi.cTabDiv = document.createElement('div');tabDiv.appendChild(pqi.cTabDiv);
+          		pqi.cTabDiv.hidden="false"; 
+            	pqi.cTabDiv.appendChild(openHealth.crossdoc2html(cTab))
+            	$("#numTable > div > div > table").css("font-size",10)
+            	$("#numTable > div > div > table > tbody > tr > th").css("color","navy")
+            }
             
         })
 		
