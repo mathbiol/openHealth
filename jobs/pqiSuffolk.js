@@ -34,12 +34,14 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 				
                 
                 // Set dimensions and groups
+                dt.map(function(d,i){dt[i].zip2=d.patient_zipcode}) // add second zip dimention
                 var cf=crossfilter(dt);
                 var zips = cf.dimension(function(d){return d.patient_zipcode});
                 //var G_zips = zips.group().reduceSum(function(d){return d.observed_rate_per_100_000_people});
                 var G_zips_reduce={};
-				var U_zips = openHealth.unique(tab.patient_zipcode).sort();
-				U_zips.map(function(u){G_zips_reduce[u]={p:0,n:0,expt:0}})
+				res.U_zips = openHealth.unique(tab.patient_zipcode).sort();
+				var U_years = openHealth.unique(tab.year).sort();
+				res.U_zips.map(function(u){G_zips_reduce[u]={p:0,n:0,expt:0}})
 				var G_zips = zips.group().reduce(
 					// reduce in
 					function(p,v){
@@ -66,14 +68,35 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                 
                 
                 var years = cf.dimension(function(d){return d.year});
-                var G_years = years.group()
+                res.G_years_reduce={}
+                U_years.map(function(y){res.G_years_reduce[y]={obs:0,expt:0,n:0}})
+                var G_years = years.group().reduce(
+                // reduce in
+                function(p,v){
+                	res.G_years_reduce[v.year].obs+=v.observed_rate_per_100_000_people;
+                	res.G_years_reduce[v.year].expt+=v.expected_rate_per_100_000_people;
+                	res.G_years_reduce[v.year].n+=1
+                	if(res.G_years_reduce[v.year].expt){return res.G_years_reduce[v.year].obs/res.G_years_reduce[v.year].expt}
+                	else{return 0}
+                },
+                //reduce out
+                function(p,v){
+                	res.G_years_reduce[v.year].obs-=v.observed_rate_per_100_000_people;
+                	res.G_years_reduce[v.year].expt-=v.expected_rate_per_100_000_people;
+                	res.G_years_reduce[v.year].n-=1
+                	if(res.G_years_reduce[v.year].expt){return res.G_years_reduce[v.year].obs/res.G_years_reduce[v.year].expt}
+                	else{return 0}
+                },
+                // ini
+                function(p){return 0}
+                )
 				var pqis = cf.dimension(function(d){return d.pqi_name});
 				//var G_Observed = pqis.group().reduceSum(function(d){return d.observed_rate_per_100_000_people})
 				res.G_Observed_reduce={};
 				res.G_Expect_reduce={};
 				res.U_pqis = openHealth.unique(tab.pqi_name).sort();
 				res.U_pqis.map(function(u){res.G_Observed_reduce[u]={p:0,expt:0,n:0}})
-				res.U_pqis.map(function(u){res.G_Expect_reduce[u]={p:0,expt:0,n:0}})
+				res.U_zips.map(function(u){res.G_Expect_reduce[u]={p:0,expt:0,n:0,x:0,y:0}})
 				var G_Observed = pqis.group().reduce(
 					// reduce in
 					function(p,v){
@@ -100,26 +123,23 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					function(){return 0}
             	)
 
-            	var expects = cf.dimension(function(d){return d.patient_zipcode}); // because we'll be bubling by zip code
+            	var expects = cf.dimension(function(d){return d.zip2}); // because we'll be bubling by zip code
                 var G_expects = expects.group().reduce(
 					// reduce in
 					function(p,v){
-						res.G_Expect_reduce[v.pqi_name].p+=v.observed_rate_per_100_000_people;
-						res.G_Expect_reduce[v.pqi_name].expt+=v.expected_rate_per_100_000_people;
-						res.G_Expect_reduce[v.pqi_name].n+=1;
-						res.G_Expect_reduce[v.pqi_name].ratio=res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt;
-						if(res.G_Expect_reduce[v.pqi_name].n>0){return res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].n}
-						else{return 0}
-						//return res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt
-						
+						res.G_Expect_reduce[v.zip2].p+=v.observed_rate_per_100_000_people;
+						res.G_Expect_reduce[v.zip2].expt+=v.expected_rate_per_100_000_people;
+						res.G_Expect_reduce[v.zip2].n+=1;
+						if(res.G_Expect_reduce[v.zip2].n>0){return res.G_Expect_reduce[v.zip2].p/res.G_Expect_reduce[v.zip2].n}
+						else{return 0}					
 					},
 					// reduce out
 					function(p,v){
-						res.G_Expect_reduce[v.pqi_name].p-=v.observed_rate_per_100_000_people;
-						res.G_Expect_reduce[v.pqi_name].expt-=v.expected_rate_per_100_000_people;
-						res.G_Expect_reduce[v.pqi_name].n-=1;
-						res.G_Expect_reduce[v.pqi_name].ratio=res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt;
-						if(res.G_Expect_reduce[v.pqi_name].n>0){return res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].n}
+						res.G_Expect_reduce[v.zip2].p-=v.observed_rate_per_100_000_people;
+						res.G_Expect_reduce[v.zip2].expt-=v.expected_rate_per_100_000_people;
+						res.G_Expect_reduce[v.zip2].n-=1;
+						//res.G_Expect_reduce[v.pqi_name].ratio=res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt;
+						if(res.G_Expect_reduce[v.zip2].n>0){return res.G_Expect_reduce[v.zip2].p/res.G_Expect_reduce[v.zip2].n}
 						else{return 0}
 						//return res.G_Observed_reduce[v.pqi_name].p/res.G_Observed_reduce[v.pqi_name].expt
 					},
@@ -181,6 +201,11 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					.innerRadius(30)
 					.dimension(years)
 					.group(G_years)
+					.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","brown"]))
+					.colorAccessor(function(d, i){
+						if(res.G_years_reduce[d.key].expt){return res.G_years_reduce[d.key].obs/res.G_years_reduce[d.key].expt}
+						else {return 0}
+                	})
 					.title(function(d){return d.year});
                 
                 C_Obs
@@ -213,7 +238,8 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 
 
 				//*
-				// get boundary value for bubble chart
+				
+        		// get boundary value for bubble chart
 				var getMinMax=function(a){ // for atribute a, say "p" or "expt"
 					var zz = [];
 					zipSuffolk.map(function(z){
@@ -231,18 +257,22 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					.transitionDuration(1500)
 					.dimension(expects)
 					.group(G_expects)
-					.x(d3.scale.linear().domain(getMinMax('expt')))
-					.y(d3.scale.linear().domain(getMinMax('p')))
+					//.dimension(zips)
+					//.group(G_zips)
+					.x(d3.scale.linear().domain([0,1.1*getMinMax('expt')[1]]))
+					.y(d3.scale.linear().domain([0,1.1*getMinMax('p')[1]]))
 					.elasticY(true)
         			.elasticX(true)
 					.r(d3.scale.linear().domain([0, 4000]))
 					.keyAccessor(function (r) { 			// <-- X values
-						if(G_zips_reduce[r.key].n){return G_zips_reduce[r.key].expt/G_zips_reduce[r.key].n}
-						else{return 0}
+						if(pqi.G_Expect_reduce[r.key].n){pqi.G_Expect_reduce[r.key].x=pqi.G_Expect_reduce[r.key].expt/pqi.G_Expect_reduce[r.key].n}
+						else{pqi.G_Expect_reduce[r.key].x=0}
+						return pqi.G_Expect_reduce[r.key].x
 					})
 					.valueAccessor(function (r) { 			// <-- Y values
-						if(G_zips_reduce[r.key].n){return G_zips_reduce[r.key].p/G_zips_reduce[r.key].n}
-						else{return 0}
+						if(pqi.G_Expect_reduce[r.key].n){pqi.G_Expect_reduce[r.key].y=pqi.G_Expect_reduce[r.key].p/pqi.G_Expect_reduce[r.key].n}
+						else{pqi.G_Expect_reduce[r.key].y=0}
+						return pqi.G_Expect_reduce[r.key].y
 					})
 					.radiusValueAccessor(function (r) { 			// <-- X values
 						//console.log(r,openHealth.data.suffolkCounty.zipPop[r.key])
@@ -254,9 +284,14 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 						//return G_zips_reduce[r.key].p/G_zips_reduce[r.key].expt
 					})
 					.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","brown"]))
-					.colorAccessor(function (d) {
+					.colorAccessor(function (d,i) {
             			//return d.value
-            			return G_zips_reduce[d.key].p/G_zips_reduce[d.key].expt
+            			if(pqi.G_Expect_reduce[d.key]){
+            				if(pqi.G_Expect_reduce[d.key].expt){
+            					return pqi.G_Expect_reduce[d.key].p/pqi.G_Expect_reduce[d.key].expt
+            				} else {return -1}
+            				
+            			} else {return -1}
         			})
 					.xAxisLabel('Expected, per 100,000')
 					.yAxisLabel('Observed, per 100,000')
@@ -272,7 +307,6 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         					return p.key;
         				}
         			})
-        
         
 
 				//*/
