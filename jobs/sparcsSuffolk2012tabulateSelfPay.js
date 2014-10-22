@@ -21,34 +21,31 @@ s=sparcsSuffolk2012;
 
 s.loadData(function(x){
 	var xx=[];
+	
+	s.medicaid={};
+	s.medicaid.docs=[];
 	for(var i=0;i<x.length;i++){
 		if(!x[i].source_of_payment_2){
 			x[i].source_of_payment_2=x[i].source_of_payment_1;
 			4
 		}
 		4
-		if(x[i].source_of_payment_1=="Self-Pay"){
+		if(x[i].source_of_payment_1=="Self-Pay"&&x[i].source_of_payment_2=="Self-Pay"){
 			xx.push(x[i]);
-
+		}
+		else if(x[i].source_of_payment_1=="Medicaid"||x[i].source_of_payment_2=="Medicaid"){ // extract Medicaid reccords
+			s.medicaid.docs.push(x[i])
 		}
 	}
 	s.tab=openHealth.docs2tab(xx);
 	s.docs=openHealth.tab2docs(s.tab);
 	console.log(xx.length+" entries loaded from "+s.url)
 	
-	// extract Medicaid only reccords
-	s.medicaid={};
-	s.medicaid.docs=[];
-	s.docs.map(function(d){
-		if(d.source_of_payment_1=="Medicaid"||d.source_of_payment_2=="Medicaid"){
-			s.medicaid.docs.push(d)
-		}
-	})
 	// clean docs
 
 	s.medicaid.tab=openHealth.docs2tab(s.medicaid.docs)
 	console.log(s.medicaid.docs.length+" Medicaid entries found")
-	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Self-Pay</b> (ccs_diagnosis_codes 49,50,186) entries in the public data <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Discharges-SPARCS-De-Identified/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county, <b style="color:blue">'+s.medicaid.docs.length+'</b> of which from Medicaid patients</p>')
+	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Self-Pay</b> (source_of_payment_1 and 2) entries in the public data <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Discharges-SPARCS-De-Identified/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county, <b style="color:blue">'+s.medicaid.docs.length+'</b> of which from Medicaid patients</p>')
 	$("#openHealthJob").append('<h4> Cross-tabulation counts for all entries and also for Medicat entries only: </h4>')
 	$("#openHealthJob").append('<p> Count <select id="parm1"></select> against <select id="parm2"></select>: <input id="tabulate" type="button" value="Tabulate"></p>')
 	s.Uparms = Object.getOwnPropertyNames(s.tab).sort();
