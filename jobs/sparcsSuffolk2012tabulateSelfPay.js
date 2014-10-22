@@ -30,7 +30,10 @@ s.loadData(function(x){
 			4
 		}
 		4
-		if(x[i].source_of_payment_1=="Self-Pay"&&x[i].source_of_payment_2=="Self-Pay"){
+		if((x[i].source_of_payment_1=="Self-Pay")&&(x[i].source_of_payment_2=="Self-Pay")){
+			x[i].source_of_payment=x[i].source_of_payment_1
+			delete x[i].source_of_payment_1
+			delete x[i].source_of_payment_2
 			xx.push(x[i]);
 		}
 		else if(x[i].source_of_payment_1=="Medicaid"||x[i].source_of_payment_2=="Medicaid"){ // extract Medicaid reccords
@@ -45,21 +48,19 @@ s.loadData(function(x){
 
 	s.medicaid.tab=openHealth.docs2tab(s.medicaid.docs)
 	console.log(s.medicaid.docs.length+" Medicaid entries found")
-	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Self-Pay</b> (source_of_payment_1 and 2) entries in the public data <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Discharges-SPARCS-De-Identified/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county, <b style="color:blue">'+s.medicaid.docs.length+'</b> of which from Medicaid patients</p>')
-	$("#openHealthJob").append('<h4> Cross-tabulation counts for all entries and also for Medicat entries only: </h4>')
+	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Self-Pay</b> (source_of_payment_1 and 2) entries in the public data <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Discharges-SPARCS-De-Identified/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county')
 	$("#openHealthJob").append('<p> Count <select id="parm1"></select> against <select id="parm2"></select>: <input id="tabulate" type="button" value="Tabulate"></p>')
 	s.Uparms = Object.getOwnPropertyNames(s.tab).sort();
 	s.Uparms.map(function(u){
 		$('#parm1').append('<option value="'+u+'">'+u+'</option>')
 		$('#parm2').append('<option value="'+u+'">'+u+'</option>')
 	})
-	$("#openHealthJob").append('<hr><div id="allPatients"><h3>All Self-Pay patients</h3></div></hr><hr><div id="medicaidPatients"><h3>Medicaid Self-Pay patients</h3></div></hr>');
+	$("#openHealthJob").append('<hr><div id="allPatients"><h3>All Self-Pay patients</h3></div></hr><hr>');
 	var bt = document.getElementById('tabulate')
 	document.getElementById('parm1').value='ccs_procedure_description'
 	document.getElementById('parm2').value='facility_name'
 	bt.onclick=function(){
 		$('#allPatients').html("<h3>All Self-Pay patients ("+s.docs.length+")</h3>")
-		$('#medicaidPatients').html("<h3>Medicaid Self-Pay patients ("+s.medicaid.docs.length+")</h3>")
 		var selParm1 = document.getElementById('parm1').value;
 		var selParm2 = document.getElementById('parm2').value;
 		var Up1 = openHealth.unique(s.tab[selParm1])
@@ -68,10 +69,7 @@ s.loadData(function(x){
 			openHealth.tabulateCount(s.tab,selParm1,selParm2,Up1,Up2),
 			'counts of '+selParm1+' vs '+selParm2+' for all Self-Pay patients.csv'
 		));
-		$('#medicaidPatients').append(openHealth.crossdoc2html(
-			openHealth.tabulateCount(s.medicaid.tab,selParm1,selParm2,Up1,Up2),
-			'counts of '+selParm1+' vs '+selParm2+' for Medicaid Self-Pay patients.csv'
-		));
+		
 		
 		//console.log(Date(),this)
 	}
