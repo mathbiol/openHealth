@@ -1,4 +1,5 @@
 console.log("sparcsSuffolk2012.js loaded")
+openHealth.getJSON.cache=false;console.log("cache disabled")
 
 sparcsSuffolk2012={};
 sparcsSuffolk2012.url=[
@@ -48,7 +49,7 @@ s.loadData(function(x){
 
 	s.medicaid.tab=openHealth.docs2tab(s.medicaid.docs)
 	console.log(s.medicaid.docs.length+" Medicaid entries found")
-	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Self-Pay</b> (source_of_payment_1 and 2) entries in the public data <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Discharges-SPARCS-De-Identified/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county')
+	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Self-Pay</b> (as documented by source_of_payment_1 and 2) entries in the public data <a href="https://health.data.ny.gov/resource/u4ud-w55t">"Hospital Inpatient Discharges (SPARCS De-Identified): 2012"</a> for Suffolk county')
 	$("#openHealthJob").append('<p> Count <select id="parm1"></select> against <select id="parm2"></select>: <input id="tabulate" type="button" value="Tabulate"></p>')
 	s.Uparms = Object.getOwnPropertyNames(s.tab).sort();
 	s.Uparms.map(function(u){
