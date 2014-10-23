@@ -437,17 +437,22 @@ this.crossdoc2html=function(d,title){ // create table from cross-document
 	var div = document.createElement('div');
 	div.innerHTML=html;
 	var bt = document.createElement('input');
-	bt.type = "button";
-	bt.value = "download"
+	bt.type = "button";bt.value = "Download";bt.style.backgroundColor="yellow";bt.style.color="blue";
+	var sp = document.createElement('span');sp.textContent=' as CSV with filename: ';sp.style.color="navy";
+	var ipTitle = document.createElement('input');ipTitle.size=100;ipTitle.style.color="blue";ipTitle.value=title;
 	//lala = bt;
 	bt.d=d;// the data
 	bt.onclick=function(){
-		openHealth.saveFile(openHealth.crossdoc2csv(this.d,title),title)
+		var title = this.parentElement.childNodes[3].value;
+		openHealth.saveFile(openHealth.crossdoc2csv(this.d,title),title);
 		//console.log(this)
 	}
-	div.appendChild(bt)
-    return div;
+	div.appendChild(bt);
+    div.appendChild(sp);
+    div.appendChild(ipTitle);
+	return div;
 }
+
 
 
 
