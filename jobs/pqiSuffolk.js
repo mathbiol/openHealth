@@ -17,7 +17,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 			dt=openHealth.tab2docs(tab);
 			res.dt=dt
             document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<h4 style="color:navy">Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009</h4> <span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-            document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id=genTable></h4><div id="numTable"></div>';
+            document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable">  <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> </h4><div id="numTable"></div>';
             
             renderAll=function(zipMap){
             	pqi.zipMap=zipMap;
@@ -199,6 +199,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
                         }
                     })
 					.colorAccessor(function(d, i){
+						if(i==0){pqi.keepTableUpdated()}
 						
 						if(d){return d}
 						else{return -1}
@@ -349,7 +350,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 				var btReset=document.getElementById('dcReset');
 	            btReset.onclick=function(){
     	        	document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<h4 style="color:navy">Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009</h4> <span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-        	    	document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id=genTable></h4><div id="numTable"></div>';
+        	    	document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable"> <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> </h4><div id="numTable"></div>';
             		openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",renderAll)
             	}
             	document.getElementById("genTable").onclick=function(){
@@ -393,6 +394,14 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
             
             
         })
+
+        res.keepTableUpdated=function(){
+        	if(document.getElementById('keepTableUpdated').checked){
+        		document.getElementById('genTable').click();
+        		console.log('table updated '+Date());
+        	}
+        	return this
+        }
 		
 		return res
     })()

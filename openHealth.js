@@ -451,7 +451,7 @@ this.crossdoc2html=function(d,title){ // create table from cross-document
 	var bt = document.createElement('input');
 	bt.type = "button";bt.value = "Download";bt.style.backgroundColor="yellow";bt.style.color="blue";
 	var sp = document.createElement('span');sp.textContent=' as CSV with filename: ';sp.style.color="navy";
-	var ipTitle = document.createElement('input');ipTitle.size=100;ipTitle.style.color="blue";ipTitle.value=title;
+	var ipTitle = document.createElement('input');ipTitle.size=100;ipTitle.style.color="green";ipTitle.value=title;
 	//lala = bt;
 	bt.d=d;// the data
 	bt.onclick=function(){
