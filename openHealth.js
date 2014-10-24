@@ -90,6 +90,18 @@ this.getText=function(url,fun){
         })   
     }   
 }
+
+this.getParms=function(url){
+	var p = {};
+	if(!url){url=window.location.search.match(/[\?&]([^=\?]+=[^=\?&]+)/g)}
+	else{url=url.match(/[\?&]([^=\?]+=[^=\?&]+)/g)}
+	if(url){
+		url.map(function(m){return m.match(/[^\?&=\/]+/g)})
+		   .map(function(av){p[av[0]]=av[1]});
+	}
+	return p
+}
+
 this.getText.cache=false
 
 this.sodaData={ // some reference SODA data links 
