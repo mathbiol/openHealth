@@ -33,7 +33,7 @@ s.loadData(function(x){
 	s.medicaid.docs=s.docs // <-- reset
 	s.medicaid.tab=openHealth.docs2tab(s.medicaid.docs)
 	console.log(s.medicaid.docs.length+" Medicaid entries found")
-	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Suffolk county records</b> found in the public data <a href="https://health.data.ny.gov/resource/2yck-xisk">"Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by Zip Code: Beginning 2012"</a><b style="color:blue">.</p>')
+	$("#openHealthJob").html('<p style="color:green">Ready to analyse the <b style="color:blue">'+s.docs.length+' Suffolk county records</b> found in [<a href="https://health.data.ny.gov/resource/2yck-xisk.json" target=_blank>2yck-xisk</a>], the public data for "<a href="https://health.data.ny.gov/resource/2yck-xisk" target=_blank>Medicaid Chronic Conditions, Inpatient Admissions and Emergency Room Visits by Zip Code: Beginning 2012</a>".</p>')
 	$("#openHealthJob").append('<h4> Cross-tabulation sums for:</h4>')
 	$("#openHealthJob").append('<p> Sum <select id="parmSum" style="color:blue"></select> for <select id="parm1"></select> against <select id="parm2"></select> <input style="background-color:yellow;color:blue" id="tabulate" type="button" value="Tabulate"></p>')
 	s.Uparms = Object.getOwnPropertyNames(s.tab).sort();
