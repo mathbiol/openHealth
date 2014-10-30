@@ -407,6 +407,28 @@ this.tabulateCount=function(tab,p1,p2,Up1,Up2){//tabulate parameter p1 against p
 	return tabcount
 }
 
+this.tabulateSum=function(tab,p1,p2,pv,Up1,Up2){//tabulate parameter p1 against p2, optional: arrays with unique values
+	if(Array.isArray(tab)){tab=this.tab2docs(tab)} // in case an array of docs is being submitted
+	if(!Up1){Up1 = this.unique(tab[p1])}
+	if(!Up2){Up2 = this.unique(tab[p2])}
+	var tabsum={}
+	// prepare table structure
+	Up1.map(function(p1){
+		tabsum[p1]={}
+		Up2.map(function(p2){
+			tabsum[p1][p2]=0			
+		})
+	})
+	var j=0
+	for(var i=0;i<tab[p1].length;i++){
+		tabsum[tab[p1][i]][tab[p2][i]]+=tab[pv][i]
+		j++
+	}
+	console.log(j+' counted')
+	return tabsum
+}
+
+
 this.crossdoc2csv=function(d,title){
 	if(!title){title=Date()+'.csv'}
 	var csv=title;
