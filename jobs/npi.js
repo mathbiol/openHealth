@@ -5,7 +5,6 @@ getNpiInfoJob = function(){
     if(document.getElementById('openHealthJob')){
         getNpiInfoJob.buildUI('openHealthJob')
     }
-    
 }
 
 getNpiInfoJob.buildUI=function(div0){
@@ -31,13 +30,15 @@ getNpiInfoJob.buildUI=function(div0){
                     })
                 })
                 x=xx;
-                d.innerHTML='<span style="color:green">'+n+' entries were found with NPI '+inputNpi.value+', summary here, <a href="">raw data</a> further below:<div id="NpiInfoJobResultsSummary">...</div></span><hr>Raw data:'
+                d.innerHTML='<span style="color:green">'+n+' entries were found with NPI '+inputNpi.value+', summary here, <a href="#rawData">raw data</a> further below:<div id="NpiInfoJobResultsSummary">...</div></span><hr><h3 id="rawData" style="color:green">Raw data:</h3>'
                 d.appendChild(openHealth.crossdoc2html(x,"NPI "+inputNpi.value+".csv",true))
                 // custumized summary
                 var tableHTML = '<table id="NpiInfoJobResultsSummaryTable" style="color:navy;border-spacing:10px;border-collapse:separate;vertical-align:top">';
                 tableHTML += '<tr style="vertical-align:top"><td>Name:</td><td id="npiName"></td><td id="npiNameMore"></td></tr>'
                 tableHTML += '<tr style="vertical-align:top"><td>Address:</td><td id="npiAddress"></td><td id="npiAddressMore"></td></tr>'
                 tableHTML += '<tr style="vertical-align:top"><td>Group:</td><td id="npiGroup"></td><td id="npiGroupMore"></td></tr>'
+                tableHTML += '<tr style="vertical-align:top"><td>Primary Speciality:</td><td id="npi1arySpeciality"></td><td id="npi1arySpecialityMore"></td></tr>'
+                tableHTML += '<tr style="vertical-align:top"><td>Hospital Affiliation:</td><td id="npiHospAfl"></td><td id="npiHospAflMore"></td></tr>'
                 tableHTML += '</table>'
                 NpiInfoJobResultsSummary.innerHTML=tableHTML
                 //Name
@@ -80,15 +81,56 @@ getNpiInfoJob.buildUI=function(div0){
 
                 // groupMore
                 var grMore=[];
-                for(var i=0;i<n;i++){
-                    grMore.push(x.org_lgl_nm[i]+'')
+                if(gr.length>1){
+                    for(var i=0;i<n;i++){
+                        grMore.push(x.org_pac_id[i]+':'+x.org_lgl_nm[i])
+                    }
+                    grMore=openHealth.unique(grMore)
+                    npiGroupMore.innerHTML=grMore.join('<br>')
+                } else {
+                    for(var i=0;i<n;i++){
+                        grMore.push(x.org_lgl_nm[i]+'')
+                    }
+                    grMore=openHealth.unique(grMore)
+                    npiGroupMore.innerHTML=grMore.join('<br>')
                 }
-                grMore=openHealth.unique(grMore)
-                npiGroupMore.innerHTML=grMore.join('<br>')
-                //npiGroup.style.color="blue"
+                //Primary spciality
+                var pr=[];
+                for(var i=0;i<n;i++){
+                    pr.push(x.pri_spec[i])
+                }
+                pr=openHealth.unique(pr)
+                npi1arySpeciality.innerHTML=pr.join('<br>')
+                npi1arySpeciality.style.color="blue"
 
-                
-                //x.ind_pac_id
+                // Hospital affiliations
+                var m = Object.getOwnPropertyNames(x).filter(function(a){return a.match('hosp_afl_lbn_')}).length
+                var af=[];
+                for(var i=0;i<n;i++){
+                    for(var j=0;j<m;j++){
+                        af.push('<button id="'+x['hosp_afl_'+(j+1)][i]+'">'+x['hosp_afl_lbn_'+(j+1)][i]+'</button>')
+                    }
+                }
+                af=openHealth.unique(af)
+                npiHospAfl.innerHTML=af.join('<br>')
+                npiHospAfl.style.color="blue"
+                var showHospInfo=function(that){
+                    npiHospAflMore.innerHTML='<span style="color:red">retrieving information for CCN#'+that.id+'...</span>'
+                    that.style.color="green"
+                    openHealth.soda("https://data.medicare.gov/resource/xubh-q36u.json?provider_id="+that.id,function(x){
+                        var pre = JSON.stringify(x,false,3)
+                        pre=pre.replace(/\{\\\"address\\\"\:\\"/g,'').replace(/\\\"/g,'').replace(/city\:/,' ').replace(/state\:/,' ').replace(/\,zip\:[^\}]*\}/,x[0].zip_code)
+                        npiHospAflMore.innerHTML='<a href="https://data.medicare.gov/resource/xubh-q36u" target=_blank>data.medicare.gov</a>:<pre>'+pre+'</pre>'
+                    })
+                    
+                }
+                hi=[]
+                for(var h = 0; h<npiHospAfl.children.length; h=h+2){
+                    npiHospAfl.children[h].onclick=function(){showHospInfo(this)}
+                    
+                }
+
+                //http://data.medicare.gov/resource/xubh-q36u.json?provider_id=330043
 
 
                 4
