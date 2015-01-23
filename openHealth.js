@@ -190,6 +190,18 @@ this.sodas=function(urls,q,fun,xx){ // version of sodaAll with multiple urls, fo
 	}
 }
 
+this.object2query=function(q){
+	if(typeof(q)=="object"){
+		var qq=""
+        var F = Object.getOwnPropertyNames(q);
+        F.forEach(function(fi){
+            qq+=fi+'='+q[fi]+'&';
+        })
+        q=qq.slice(0,qq.length-1); // remove the last &
+    }
+    return q
+}
+
 this.txt2docs=function(txt){
 	if (txt[0]=='['){ // txt is json
 		var docs = JSON.parse(txt);
@@ -450,10 +462,11 @@ this.crossdoc2csv=function(d,title){
 	return csv
 }
 
-this.crossdoc2html=function(d,title){ // create table from cross-document
+this.crossdoc2html=function(d,title,sort){ // create table from cross-document
 	if(!title){title=Date()+'.csv'}
     var html = '<table border=1 style="color:navy">';
     var rows = Object.getOwnPropertyNames(d);
+    if(sort){rows.sort()}
     var cols = [""].concat(Object.getOwnPropertyNames(d[rows[0]]));
     // header
     html +='<tr>';
@@ -486,9 +499,6 @@ this.crossdoc2html=function(d,title){ // create table from cross-document
     div.appendChild(ipTitle);
 	return div;
 }
-
-
-
 
 this.markdown=function(x){ // basic markdown2html
     x = x.replace(/\[([^\]]+)\]\(([^\)]+)\)/g,'<a href="$2" target=_blank>$1</a>'); // links
@@ -541,6 +551,18 @@ this.endJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exi
         },1000)
         
     }
+}
+
+this.npi=function(q,fun){ // retrieve data on a National Provider Identifier from CMS
+	if(!q){q=1548485139} // default example
+	if(!fun){fun = function(x){console.log(x)}}
+	var url = 'https://data.medicare.gov/resource/s63f-csi6.json?';
+	// basic filtering
+	if(typeof(q)=="number"){q=""+q} // if number convert to string
+	q=openHealth.object2query(q) // if it is an object
+	if(q.match(/^[\d]+$/)){q='npi='+q} // if the query is an integer then assume it is the NPI
+	this.soda(url,q,fun)
+	return this
 }
 
 
