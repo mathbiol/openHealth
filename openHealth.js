@@ -556,7 +556,7 @@ this.endJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exi
 this.npi=function(q,fun){ // retrieve data on a National Provider Identifier from CMS
 	if(!q){q=1548485139} // default example
 	if(!fun){fun = function(x){console.log(x)}}
-	var url = 'https://data.medicare.gov/resource/s63f-csi6.json?';
+	var url = 'https://data.medicare.gov/resource/3uxj-hea6.json?';
 	// basic filtering
 	if(typeof(q)=="number"){q=""+q} // if number convert to string
 	q=openHealth.object2query(q) // if it is an object

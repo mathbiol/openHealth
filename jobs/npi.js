@@ -10,7 +10,7 @@ getNpiInfoJob = function(){
 
 getNpiInfoJob.buildUI=function(div0){
     if(typeof(div0)=='string'){div0=document.getElementById(div0)}
-    div0.innerHTML='NPI: <input id=inputNpi value="1548485139" style="color:blue"> <button id="inputNpiButton">enter</button> <a href="https://data.medicare.gov/resource/s63f-csi6" target=_blank>source</a><div id="getNpiInfoJobResults" style="color:blue"> ... click or press enter ... </div>';
+    div0.innerHTML='NPI: <input id=inputNpi value="1548485139" style="color:blue"> <button id="inputNpiButton">enter</button> <a href="https://data.medicare.gov/resource/3uxj-hea6" target=_blank>source</a><div id="getNpiInfoJobResults" style="color:blue"> ... click or press enter ... </div>';
     var bt = document.getElementById('inputNpiButton')
     bt.onclick=function(){
         openHealth.npi(inputNpi.value,function(x){
