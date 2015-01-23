@@ -31,7 +31,7 @@ getNpiInfoJob.buildUI=function(div0){
                     })
                 })
                 x=xx;
-                d.innerHTML='<span style="color:green">'+n+' entries were found with NPI '+inputNpi.value+', summary:<div id="NpiInfoJobResultsSummary">...</div></span><hr>Raw data:'
+                d.innerHTML='<span style="color:green">'+n+' entries were found with NPI '+inputNpi.value+', summary here, <a href="">raw data</a> further below:<div id="NpiInfoJobResultsSummary">...</div></span><hr>Raw data:'
                 d.appendChild(openHealth.crossdoc2html(x,"NPI "+inputNpi.value+".csv",true))
                 // custumized summary
                 var tableHTML = '<table id="NpiInfoJobResultsSummaryTable" style="color:navy;border-spacing:10px;border-collapse:separate;vertical-align:top">';
@@ -41,8 +41,14 @@ getNpiInfoJob.buildUI=function(div0){
                 tableHTML += '</table>'
                 NpiInfoJobResultsSummary.innerHTML=tableHTML
                 //Name
-                npiName.textContent=x.frst_nm[0]+' '+x.mid_nm[0]+' '+x.lst_nm[0]
-                npiName.style.color="blue"
+                var nm = []
+                for(var i=0;i<n;i++){
+                    nm.push(x.frst_nm[i]+' '+x.mid_nm[i]+' '+x.lst_nm[i])
+                }
+                nm=openHealth.unique(nm)
+                npiName.innerHTML=nm.join('<br>')
+                if(nm.length>1){npiName.style.color="red"}
+                else{npiName.style.color="blue"}
                 npiNameMore.textContent=' NPI:'+inputNpi.value
                 //Address
                 var sz = []; // state and zip code
@@ -62,6 +68,27 @@ getNpiInfoJob.buildUI=function(div0){
                 }
                 addresses=openHealth.unique(addresses)
                 npiAddressMore.innerHTML=addresses.join('<br>')
+
+                // group
+                var gr=[];
+                for(var i=0;i<n;i++){
+                    gr.push(x.org_pac_id[i])
+                }
+                gr=openHealth.unique(gr)
+                npiGroup.innerHTML=gr.join('<br>')
+                npiGroup.style.color="blue"
+
+                // groupMore
+                var grMore=[];
+                for(var i=0;i<n;i++){
+                    grMore.push(x.org_lgl_nm[i]+'')
+                }
+                grMore=openHealth.unique(grMore)
+                npiGroupMore.innerHTML=grMore.join('<br>')
+                //npiGroup.style.color="blue"
+
+                
+                //x.ind_pac_id
 
 
                 4
