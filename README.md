@@ -42,6 +42,6 @@ openHealth.sodaData
 <a href="http://mathbiol.github.io/openHealth/?jobs/pqiSuffolk.js" target=_blank><img src="http://mathbiol.github.io/openHealth/jobs/pqi.png"></a>
 
 * <a href="http://mathbiol.github.io/openHealth/?jobs/pqiSuffolk.js" target=_blank>Preventable diseases in Suffolk County</a> (snapshot above, uses health.data.ny.gov and census.gov).
-* <a href="http://mathbiol.github.io/openHealth/?jobs/sparcsSuffolk2012tabulateDiabetes.js" target=_blank>Hospital discharge of diabetic patient</a> (using health.data.ny.gov).
+* <a href="http://mathbiol.github.io/openHealth/?jobs/sparcsSuffolk2012tabulateDiabetes.js" target=_blank>Hospital discharge of diabetic patients</a> (using health.data.ny.gov).
 * <a href="https://mathbiol.github.io/openHealth/?jobs/npi.js" target=_blank>Extracting national data from the Unique professional ID assigned by NPPES (PNI), and crossing it with CCN numbers from affiliated Hospitals</a> (using data.medicare.gov).
 * ...
