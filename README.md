@@ -12,7 +12,7 @@ $.getScript("https://mathbiol.github.io/openHealth/openHealth.js")
 ```
 OpenHealth is a stand alone JavaScript library to help interoperating with public data sources of Health data. It creates a single object, **openHealth** in the DOM namespace following the same "namespace pollution" approach common in analytical environments such as Matlab and R.
 
-### API example
+### API examples
 
 Full documentation in the [wiki](https://github.com/mathbiol/openHealth/wiki)
 
@@ -36,3 +36,12 @@ openHealth.sodas("NY Medicare Inpatient",undefined,function(x){NYmed=x;console.l
 // for list of URL references for SODA data see
 openHealth.sodaData
 ````
+
+### Application examples
+
+<a href="http://mathbiol.github.io/openHealth/?jobs/pqiSuffolk.js" target=_blank><img src="http://mathbiol.github.io/openHealth/jobs/pqi.png"></a>
+
+* <a href="http://mathbiol.github.io/openHealth/?jobs/pqiSuffolk.js" target=_blank>Preventable diseases in Suffolk County</a> (snapshot above, uses health.data.ny.gov and census.gov).
+* <a href="http://mathbiol.github.io/openHealth/?jobs/sparcsSuffolk2012tabulateDiabetes.js" target=_blank>Hospital discharge of diabetic patient</a> (using health.data.ny.gov).
+* <a href="https://mathbiol.github.io/openHealth/?jobs/npi.js" target=_blank>Extracting national data from the Unique professional ID assigned by NPPES (PNI), and crossing it with CCN numbers from affiliated Hospitals</a> (using data.medicare.gov).
+* ...
