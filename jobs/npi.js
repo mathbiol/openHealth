@@ -44,7 +44,9 @@ getNpiInfoJob.buildUI=function(div0){
                 //Name
                 var nm = []
                 for(var i=0;i<n;i++){
-                    nm.push(x.frst_nm[i]+' '+x.mid_nm[i]+' '+x.lst_nm[i])
+                    if(!x.mid_nm){x.mid_nm=[]}
+                    if(!x.mid_nm[i]){x.mid_nm[i]=''}else{x.mid_nm[i]+=' '}
+                    nm.push(x.frst_nm[i]+' '+x.mid_nm[i]+x.lst_nm[i])
                 }
                 nm=openHealth.unique(nm)
                 npiName.innerHTML=nm.join('<br>')
