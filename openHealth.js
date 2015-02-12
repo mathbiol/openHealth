@@ -69,7 +69,8 @@ this.getJSON=function(url,fun){
 }
 this.getJSON.cache=true
 
-this.getText=function(url,fun){    
+this.getText=function(url,fun){  
+	if(!fun){fun = function(x){console.log(x)}}
     if(!this.getText.cache){ // if caching not enabled
         this.xhr(url,function(x){fun(x.target.responseText)});
     } else {
@@ -577,7 +578,7 @@ window.onload=function(){
     if(window.location.search.length>0){
         console.log("window loaded");
         openHealth.startJobMsgURL();   
-        openHealth.getScript(window.location.search.slice(1),function(){
+        openHealth.getScript(window.location.search.slice(1).replace(/\/$/,''),function(){
             openHealth.endJobMsgURL();
         });
         
