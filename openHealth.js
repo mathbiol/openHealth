@@ -34,6 +34,16 @@ this.getScript=function(src,fun){
     } 
 };
 
+this.require=function(libs,fun){// load dependencies / extension libraries
+	if(typeof(libs)=="string"){libs=[libs]}
+	libs=libs.map(function(libi){
+		if(!libi.match(/\//)){libi=libi+'/'+libi+'.js'} // say if ei is "tcga" it is converted into "tcga/tcga.js"
+		return libi
+	})
+	openHealth.getScript(libs,fun)
+	return this
+}
+
 this.xhr=function(url,meth,fun){ // XMLHttpRequest
     if(typeof(meth)=="function"){fun=meth;meth="GET"} // in case this is a regular GET call
     if(!meth){meth="GET"}
@@ -54,6 +64,7 @@ this.getJSON=function(url,fun){
             if(!x){ // if item not found
                 var moreFun = function(x){
 					var y = JSON.parse(x.target.responseText);
+					if(!fun){fun=function(x){console.log(x)}}
                     fun(y);
                     localforage.setItem(key,y);
                     //console.log('seting '+key);
