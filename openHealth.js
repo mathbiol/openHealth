@@ -568,7 +568,9 @@ this.createLog=function(h){ // create log div, if posiible, within an existing o
 this.startJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exists
     var divMsg=document.getElementById("msg")
     if(divMsg){
-        divMsg.innerHTML='Processing ... : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
+    	var sUrl = window.location.search.slice(1);
+       	if(sUrl.slice(-1)=="/"){sUrl=sUrl.slice(0,-1)}
+        divMsg.innerHTML='Processing ... : <a href="'+sUrl+'" target=_blank>'+sUrl+'</a>';
         divMsg.style.color="red";
     }
 	this.createLog('<p style="color:red">Executing job, please wait ...</p>')
@@ -579,9 +581,13 @@ this.endJobMsgURL=function(){ // post URL of job into the div.id="msg" if it exi
     if(divMsg){
 		//document.getElementById("openHealthJob").innerHTML="";
         divMsg.style.color="blue";
-        divMsg.innerHTML='Processing ... done : <a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>';
+        var sUrl = window.location.search.slice(1);
+        if(sUrl.slice(-1)=="/"){sUrl=sUrl.slice(0,-1)}
+        divMsg.innerHTML='Processing ... done : <a href="'+sUrl+'" target=_blank>'+sUrl+'</a>';
         setTimeout(function(){
-            divMsg.innerHTML='Script (<a href="'+window.location.search.slice(1)+'" target=_blank>'+window.location.search.slice(1)+'</a>) processed <i>'+new Date(Date.now())+'</i>:';
+        	var sUrl = window.location.search.slice(1);
+        	if(sUrl.slice(-1)=="/"){sUrl=sUrl.slice(0,-1)}
+            divMsg.innerHTML='Script (<a href="'+sUrl+'" target=_blank>'+sUrl+'</a>) processed <i>'+new Date(Date.now())+'</i>:';
             divMsg.style.color="green";
         },1000)
         
