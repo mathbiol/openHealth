@@ -17,24 +17,39 @@ openHealth.require(
                 div0.id='openHealthJob'
                 document.body.appendChild(div0)
             }
-            div0.innerHTML='<h4 style="color:green">Querying Janos\' PPS list</h4>(starting point for a user-maintained masterlist?)<div style="color:navy"><input id="ppsQueryInput" style="color:blue" size=50> type or paste query</div><div id="ppsQueryResults" style="color:blue"></div>'
-            ppsQueryInput.onkeyup=function(){
-                if(ppsQueryInput.value.length>3){
+            div0.innerHTML='<h4 style="color:green">Querying Janos\' PPS list</h4>(starting point for a user-maintained masterlist?)<div style="color:navy"><input id="ppsQueryInput" style="color:blue" size=50> type or paste, <input type="checkbox" id="queryOnlyOnEnter"> query on Enter</div><div id="ppsQueryResults" style="color:blue"></div>'
+            var queryAndShow = function(){
+                ppsQueryResults.innerHTML='<span style="color:red">querying ...</span>'
+                ppsQueryInput.style.color="red"
+                ppsQueryInput.disabled=true
+                setTimeout(
+                    function(){
+                        var res=[]
+                        openHealth.data.ppsStr.forEach(function(r,i){
+                            if(r.match(new RegExp(ppsQueryInput.value,'i'))){
+                                res.push(openHealth.data.pps[i])
+                            }
+                        })
+                        ppsQueryResults.innerHTML='# results found: '+res.length
+                        ppsQueryResults.appendChild(
+                            openHealth.crossdoc2html(
+                                openHealth.transposeObj(openHealth.array2obj(res)),
+                                ppsQueryInput.value+'.csv',
+                                true
+                            )
+                        )
+                        ppsQueryInput.style.color="blue"
+                        ppsQueryInput.disabled=false
+                        ppsQueryInput.focus()
+                    },100)
+            }
+            ppsQueryInput.onkeyup=function(evt){
+                if((evt.keyCode==13)&(queryOnlyOnEnter.checked)){
+                    queryAndShow()
+                }else if((ppsQueryInput.value.length>3)&(!queryOnlyOnEnter.checked)){
                     // query stringified array
-                    var res=[]
-                    openHealth.data.ppsStr.forEach(function(r,i){
-                        if(r.match(new RegExp(ppsQueryInput.value,'i'))){
-                            res.push(openHealth.data.pps[i])
-                        }
-                    })
-                    ppsQueryResults.innerHTML='# results found: '+res.length
-                    ppsQueryResults.appendChild(openHealth.crossdoc2html(
-                        openHealth.transposeObj(openHealth.array2obj(res)),
-                        ppsQueryInput.value+'.csv',
-                        true
-                    ))
+                    queryAndShow()
                 }
-                4
 
             }
         })
