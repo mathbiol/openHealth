@@ -31,13 +31,15 @@ openHealth.require(
                             }
                         })
                         ppsQueryResults.innerHTML='# results found: '+res.length
-                        ppsQueryResults.appendChild(
+                        if(res.length>0){
+                            ppsQueryResults.appendChild(
                             openHealth.crossdoc2html(
                                 openHealth.transposeObj(openHealth.array2obj(res)),
                                 ppsQueryInput.value+'.csv',
-                                true
+                                true)
                             )
-                        )
+                        }
+                        
                         ppsQueryInput.style.color="blue"
                         ppsQueryInput.disabled=false
                         ppsQueryInput.focus()
