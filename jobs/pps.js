@@ -29,8 +29,9 @@ openHealth.require(
                     })
                     ppsQueryResults.innerHTML='# results found: '+res.length
                     ppsQueryResults.appendChild(openHealth.crossdoc2html(
-                        openHealth.docs2tab(res),
-                        ppsQueryInput.value+'.csv'
+                        openHealth.transposeObj(openHealth.array2obj(res)),
+                        ppsQueryInput.value+'.csv',
+                        true
                     ))
                 }
                 4

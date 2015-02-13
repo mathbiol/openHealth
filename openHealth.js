@@ -364,6 +364,19 @@ this.transpose=function (x){ // transposes 2D array
         return y
 }
 
+this.transposeObj=function(x){
+	var a = Object.getOwnPropertyNames(x)
+	var b = Object.getOwnPropertyNames(x[a[0]])
+	var y = {};
+	b.forEach(function(bi){
+		y[bi]={}
+		a.forEach(function(ai){
+			y[bi][ai]=x[ai][bi]
+		})
+	})
+	return y
+}
+
 this.max=function(x){ //return maximum value of array
         return x.reduce(function(a,b){if(a>b){return a}else{return b}})
 }
@@ -408,6 +421,16 @@ this.memb=function(x,dst){ // builds membership function
 		return y;
 	}
 	
+}
+
+this.array2obj=function(a){
+	var o = {}
+	var aa = Object.getOwnPropertyNames(a)
+	aa.pop(-1) // to remove "length"
+	aa.forEach(function(ai,i){
+		o[i+1]=a[ai]
+	})
+	return o
 }
 
 this.tabulateCount=function(tab,p1,p2,Up1,Up2){//tabulate parameter p1 against p2, optional: arrays with unique values
