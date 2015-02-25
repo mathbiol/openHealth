@@ -204,7 +204,7 @@ openHealth.require('tcga',function(){
        				return patient[v.key].age
        			})
        			.radiusValueAccessor(function (v) {
-       				return 5
+       				return v.value/2
        			})
        			.x(d3.scale.linear())
        			.y(d3.scale.linear())
