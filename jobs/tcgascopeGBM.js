@@ -56,7 +56,7 @@ openHealth.require('tcga',function(){
         // ---- UI Dimensional scalling ---
         openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
             openHealthJobMsg.textContent="Assembling charts ..."
-            openHealthJobDC.innerHTML='<table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>Location:</div><div id="section_location"></div><div>Gender:</div><div id="gender"></div><div>Race:</div><div id="race"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table>'
+            openHealthJobDC.innerHTML='<table><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>Location:</div><div id="section_location"></div><div>Gender:</div><div id="gender"></div><div>Race:</div><div id="race"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table></td><td style="vertical-align:top"><h3>Tumor progression</h3><div id="tumorProgression">...</div></td></tr></table>'
             var docs = openHealth.tcga.dt.gbmDocs
             var tab = openHealth.tcga.dt.gbmTab
 
@@ -143,7 +143,6 @@ openHealth.require('tcga',function(){
 			  // ini
 			  function(){return 0}
             )
-            console.log(U[parm].length*15)
             C[parm]=dc.rowChart("#"+parm)
             	.width(300)
             	.height(40+U[parm].length*15)
@@ -174,10 +173,46 @@ openHealth.require('tcga',function(){
 			addRowChard('gender',openHealth.unique(openHealth.tcga.dt.gbmTab.gender))
 			addRowChard('race',openHealth.unique(openHealth.tcga.dt.gbmTab.race))
 			
+			C.tumorProgression = dc.bubbleChart("#tumorProgression");
+			D.tumorProgression = cf.dimension(function(d){return d.patient})
+			R.tumorProgression={}
+			openHealth.unique(openHealth.tcga.dt.gbmTab.patient).map(function(u){
+				R.tumorProgression[u]={c:0}
+			})
+			G.tumorProgression = D.tumorProgression.group().reduce(
+				// reduce in
+		      function(p,v){
+		      	return R.tumorProgression[v.patient].c+=1
+		      },
+		      // reduce out
+		      function(p,v){
+		      	return R.tumorProgression[v.patient].c-=1
+		      },
+			  // ini
+			  function(){return 0}
+       		)
+
+       		C.tumorProgression
+       			.width(1000)
+       			.height(1000)
+       			.dimension(D.tumorProgression)
+       			.group(G.tumorProgression)
+       			.keyAccessor(function(v){ // <-- X values
+       				return patient[v.key].survival
+       			})
+       			.valueAccessor(function(v){ // <-- Y values
+       				return patient[v.key].age
+       			})
+       			.radiusValueAccessor(function (v) {
+       				return 5
+       			})
+       			.x(d3.scale.linear())
+       			.y(d3.scale.linear())
+       			.elasticY(true)
+        		.elasticX(true)
+					
 
 
-
-           	
            	
             dc.renderAll();
 
