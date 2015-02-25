@@ -33,6 +33,9 @@ openHealth.require('tcga',function(){
                 xi.age=p.age
                 xi.dead=p.dead
                 xi.survival=p.survival
+                xi.gender=p.gender
+                xi.race=p.race
+                xi.karnofsky_performance_score=p.karnofsky_performance_score
             }else{
                 console.log('patient '+bcr+' not found for slide '+i)
             }           
@@ -53,11 +56,20 @@ openHealth.require('tcga',function(){
         // ---- UI Dimensional scalling ---
         openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
             openHealthJobMsg.textContent="Assembling charts ..."
-            openHealthJobDC.innerHTML='<table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>Location:</div><div id="section_location"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table>'
+            openHealthJobDC.innerHTML='<table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>Location:</div><div id="section_location"></div><div>Gender:</div><div id="gender"></div><div>Race:</div><div id="race"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table>'
             var docs = openHealth.tcga.dt.gbmDocs
             var tab = openHealth.tcga.dt.gbmTab
 
              C = {}, D={}, G={}, U={}, R={}
+
+            /*
+            var scaleVal=function(v){
+            	return Math.log10(v+1)
+            }
+            var unScaleVal=function(v){
+            	return Math.pow(10,parseFloat(v))-1
+            }
+            */
             
             var cf=crossfilter(docs);
             
@@ -119,11 +131,13 @@ openHealth.require('tcga',function(){
               // reduce in
 		      function(p,v){
 		      	R[parm][v[parm]].c+=1
+		        //return scaleVal(R[parm][v[parm]].c)
 		        return R[parm][v[parm]].c
 		      },
 		      // reduce out
 		      function(p,v){
 		      	R[parm][v[parm]].c-=1
+		        //return scaleVal(R[parm][v[parm]].c)
 		        return R[parm][v[parm]].c
 		      },
 			  // ini
@@ -132,7 +146,7 @@ openHealth.require('tcga',function(){
             console.log(U[parm].length*15)
             C[parm]=dc.rowChart("#"+parm)
             	.width(300)
-            	.height(Math.max(100,U[parm].length*15))
+            	.height(40+U[parm].length*15)
            		.dimension(D[parm])
            		.elasticX(true)
            		.group(G[parm])
@@ -140,6 +154,8 @@ openHealth.require('tcga',function(){
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
+           		//.xAxis().tickFormat(function(v){return unScaleVal(v)})
+           		
            		//.title(function(d){
            		//	return d.key+="%"
            		//})
@@ -155,9 +171,9 @@ openHealth.require('tcga',function(){
 			addRowChard('percent_monocyte_infiltration')
 			addRowChard('percent_neutrophil_infiltration')
 			addRowChard('section_location',openHealth.unique(openHealth.tcga.dt.gbmTab.section_location))
-			//
-			//section_location
-
+			addRowChard('gender',openHealth.unique(openHealth.tcga.dt.gbmTab.gender))
+			addRowChard('race',openHealth.unique(openHealth.tcga.dt.gbmTab.race))
+			
 
 
 
@@ -183,6 +199,8 @@ openHealth.require('tcga',function(){
             AddXAxis(C.percent_monocyte_infiltration,'# found')
             AddXAxis(C.percent_neutrophil_infiltration,'# found')
             AddXAxis(C.section_location,'# found')
+            AddXAxis(C.gender,'# found')
+            AddXAxis(C.race,'# found')
 
             
             
