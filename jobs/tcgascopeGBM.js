@@ -66,7 +66,7 @@ openHealth.require('tcga',function(){
         // ---- UI Dimensional scalling ---
         openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
             openHealthJobMsg.textContent="Assembling charts ..."
-            openHealthJobDC.innerHTML='<table><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div><div>Karnofsky Score:</div><div id="karnofsky_performance_score"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>Location:</div><div id="section_location"></div><div>Gender:</div><div id="gender"></div><div>Race:</div><div id="race"></div><div id="slideImagesHeader">Slide Images:</div><div id="slideImages"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div><div id="tcgaPatientsHeader">TCGA patients:</div><div id="tcgaPatients"></div></td></tr></table></td><td style="vertical-align:top"><h3>GBM Tumor progression</h3><div id="tumorProgression">...</div>Legend: color indicates Karnofsky performance score diameter; indicates number of images</td></tr></table>'
+            openHealthJobDC.innerHTML='<table><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div><div>Location:</div><div id="section_location"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>Karnofsky Score:</div><div id="karnofsky_performance_score"></div><div>Race:</div><div id="race"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div><div>Gender:</div><div id="gender"></div></td></tr></table></td><td style="vertical-align:top"><h3>GBM Tumor progression</h3><div id="tumorProgression"></div>Legend: color indicates Karnofsky performance score; diameter indicates number of images</td></tr></table><table><tr><td style="vertical-align:top"><div id="tcgaPatientsHeader">TCGA patients:</div><div id="tcgaPatients"></div></td><td style="vertical-align:top"><div id="slideImagesHeader">Slide Images:</div><div id="slideImages"></div></td><td></td></tr></table>'
             var docs = openHealth.tcga.dt.gbmDocs
             var tab = openHealth.tcga.dt.gbmTab
 
@@ -84,16 +84,16 @@ openHealth.require('tcga',function(){
 				Object.getOwnPropertyNames(P[parm]).forEach(function(p){
 					if(P[parm][p].c>0){pp.push(p)}
 				})
-				slideImagesHeader.textContent='Slide Images ('+ss.length+'):'
-				tcgaPatientsHeader.textContent='TCGA patients ('+pp.length+'):'
+				slideImagesHeader.textContent=' Slide Images ('+ss.length+'):'
+				tcgaPatientsHeader.textContent=' TCGA patients ('+pp.length+'):'
 				tcgaPatients.innerHTML=""
 				slideImages.innerHTML=""
-				pp.forEach(function(p,i){
+				pp.sort().forEach(function(p,i){
 					var pr = document.createElement('p')
-					pr.innerHTML=i+') <a href="http://www.cbioportal.org/case.do?case_id='+p+'&cancer_study_id=gbm_tcga" target=_blank>'+p+'</a>'
+					pr.innerHTML=' '+i+') <button>'+p+'</button> <a href="http://www.cbioportal.org/case.do?case_id='+p+'&cancer_study_id=gbm_tcga" target=_blank>cBio</a>. '
 					tcgaPatients.appendChild(pr)
 				})
-				ss.forEach(function(s,i){
+				ss.sort().forEach(function(s,i){
 					var pr = document.createElement('p')
 					pr.innerHTML=i+') '+s
 					slideImages.appendChild(pr)
