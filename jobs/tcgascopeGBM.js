@@ -70,17 +70,39 @@ openHealth.require('tcga',function(){
             var docs = openHealth.tcga.dt.gbmDocs
             var tab = openHealth.tcga.dt.gbmTab
 
-             C = {}, D={}, G={}, U={}, R={}
+            var C = {}, D={}, G={}, U={}, R={}
+            var P={},S={}  // list patients and slides
+			var listSlides=function(){
+				if(R.gender.FEMALE.c+R.gender.MALE.c>R.section_location.BOTTOM.c+R.section_location.TOP.c){
+					var parm = 'section_location'
+				} else {var parm = 'gender'}
+				var ss=[] // list of slides
+				var pp=[] // list of patients
+				Object.getOwnPropertyNames(S[parm]).forEach(function(s){
+					if(S[parm][s].c>0){ss.push(s)}
+				})
+				Object.getOwnPropertyNames(P[parm]).forEach(function(p){
+					if(P[parm][p].c>0){pp.push(p)}
+				})
+				slideImagesHeader.textContent='Slide Images ('+ss.length+'):'
+				tcgaPatientsHeader.textContent='TCGA patients ('+pp.length+'):'
+				tcgaPatients.innerHTML=""
+				slideImages.innerHTML=""
+				pp.forEach(function(p,i){
+					var pr = document.createElement('p')
+					pr.innerHTML=i+') <a href="http://www.cbioportal.org/case.do?case_id='+p+'&cancer_study_id=gbm_tcga" target=_blank>'+p+'</a>'
+					tcgaPatients.appendChild(pr)
+				})
+				ss.forEach(function(s,i){
+					var pr = document.createElement('p')
+					pr.innerHTML=i+') '+s
+					slideImages.appendChild(pr)
+				})
 
-            /*
-            var scaleVal=function(v){
-            	return Math.log10(v+1)
-            }
-            var unScaleVal=function(v){
-            	return Math.pow(10,parseFloat(v))-1
-            }
-            */
-            
+
+				//console.log(Date(),ss,pp)
+			}
+
             var cf=crossfilter(docs);
             
 			/*
@@ -159,18 +181,71 @@ openHealth.require('tcga',function(){
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
-           		//.xAxis().tickFormat(function(v){return unScaleVal(v)})
            		
-           		//.title(function(d){
-           		//	return d.key+="%"
-           		//})
+           	if(fun){
+				fun(C[parm])
+			}
+
+			}
+			// - - - - version that tracks slides and images - - - - 
+			var addRowChard2=function(parm,Uparm,fun){
+            D[parm]=cf.dimension(function(d){
+                return d[parm]
+            })
+            R[parm]={}
+            P[parm]={}
+            openHealth.unique(openHealth.tcga.dt.gbmTab.patient).map(function(p){
+            	P[parm][p]={c:0}
+            })
+            S[parm]={}
+			openHealth.tcga.dt.gbmTab.bcr_slide_barcode.map(function(s){
+            	S[parm][s]={c:0}
+            })
+            
+
+            if(!Uparm){
+            	U[parm] = openHealth.tcga.sortPercent(openHealth.unique(tab[parm]))
+            } else {
+            	U[parm] = Uparm
+            }
+            U[parm].forEach(function(u){
+                R[parm][u]={c:0}
+            })
+
+            G[parm]=D[parm].group().reduce(
+              // reduce in
+		      function(p,v){
+		      	P[parm][v.patient].c=P[parm][v.patient].c+1
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c+1	      	
+		      	return R[parm][v[parm]].c+=1
+		      },
+		      // reduce out
+		      function(p,v){
+		      	P[parm][v.patient].c=P[parm][v.patient].c-1
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c-1	      	
+		      	return R[parm][v[parm]].c-=1
+		      },
+			  // ini
+			  function(){return 0}
+            )
+            C[parm]=dc.rowChart("#"+parm)
+            	.width(300)
+            	.height(40+U[parm].length*15)
+           		.dimension(D[parm])
+           		.elasticX(true)
+           		.group(G[parm])
+           		.ordering(function(d){
+           			if(d.key=="[Not Available]"){return -1}
+           			else{return parseInt(d.key)}
+           		})
+           		
            	if(fun){
 				fun(C[parm])
 			}
 
 			}
 
-			
+			// - - - - - - - - - - - - -
 
 			
 
@@ -181,10 +256,22 @@ openHealth.require('tcga',function(){
 			addRowChard('percent_lymphocyte_infiltration')
 			addRowChard('percent_monocyte_infiltration')
 			addRowChard('percent_neutrophil_infiltration')
-			addRowChard('section_location',openHealth.unique(openHealth.tcga.dt.gbmTab.section_location))
-			addRowChard('gender',openHealth.unique(openHealth.tcga.dt.gbmTab.gender))
+			addRowChard2('section_location',openHealth.unique(openHealth.tcga.dt.gbmTab.section_location))
+			addRowChard2('gender',openHealth.unique(openHealth.tcga.dt.gbmTab.gender))
 			addRowChard('race',openHealth.unique(openHealth.tcga.dt.gbmTab.race))
-			
+			addRowChard(
+				'karnofsky_performance_score',
+				openHealth.unique(openHealth.tcga.dt.gbmTab.karnofsky_performance_score),
+				function(CRT){
+					CRT
+						.colors(d3.scale.linear().domain([-1,0,40,80,90,100]).range(["silver","red","red","yellow","green","green"]))
+						.colorAccessor(function (d,i) {
+							var v = parseFloat(d.key)
+							if(isNaN(v)){return -1}
+							else{return v}
+						})
+				}
+			)
 			
 			C.tumorProgression = dc.bubbleChart("#tumorProgression");
 			D.tumorProgression = cf.dimension(function(d){return d.patient})
@@ -217,6 +304,18 @@ openHealth.require('tcga',function(){
        				return patient[v.key].age
        			})
        			.radiusValueAccessor(function (v) {
+       				/*
+       				if(i==0){ // things done a single time
+       					tcgaPatients.innerHTML=""
+       				}
+       				if(v.value>0){
+       					var p = document.createElement('p')
+						p.innerHTML=tcgaPatients.children.length+1+') <a href="http://www.cbioportal.org/case.do?case_id='+v.key+'&cancer_study_id=gbm_tcga" target=_blank>'+v.key+'</a>'
+						tcgaPatients.appendChild(p)
+       				}
+       				*/
+       				
+
        				return v.value/2
        			})
        			.x(d3.scale.linear())
@@ -224,7 +323,10 @@ openHealth.require('tcga',function(){
        			.elasticY(true)
         		.elasticX(true)
         		.xAxisLabel('Survival (days)')
-				.yAxisLabel('Age (years)')
+				.yAxisLabel(function(d){
+					setTimeout(function(){listSlides()},1000)
+					return 'Age (years)'
+				})
 				.colors(d3.scale.linear().domain([-1,0,40,80,90,100]).range(["silver","red","red","yellow","green","green"]))
 				.colorAccessor(function (d,i) {
 					var v = patient[d.key].score
@@ -233,6 +335,7 @@ openHealth.require('tcga',function(){
 				})
 
 					
+			/*
 			addRowChard(
 				'karnofsky_performance_score',
 				openHealth.unique(openHealth.tcga.dt.gbmTab.karnofsky_performance_score),
@@ -266,7 +369,8 @@ openHealth.require('tcga',function(){
 							else{return v}
 						})
 				}
-			)		
+			)	
+			*/	
 
 
            	
@@ -294,12 +398,6 @@ openHealth.require('tcga',function(){
             AddXAxis(C.race,'# found')
             // clear bootstrap to make room
             document.getElementById('openHealth').className=""
-
-            
-            
-
-            
-
             openHealthJobMsg.textContent=""
 
 
