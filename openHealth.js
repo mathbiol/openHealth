@@ -293,6 +293,17 @@ this.avgKeyValue=function(tab,key,val,x){ // find avverage value of a key value 
 	return this.sum(tabKeyVal)/tabKeyVal.length
 }
 
+this.findOne=function(docs,attr,val){
+	y=null
+	for(var i=0;i<docs.length;i++){
+		if(docs[i][attr]==val){
+			y=docs[i]
+			break
+		}
+	}
+	return y
+}
+
 this.avgKeyValues=function(tab,key,vals,x){ // aplies .avgKeyValue to all values
 	var y={}
 	vals.map(function(v){
