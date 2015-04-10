@@ -617,6 +617,22 @@ this.npi=function(q,fun){ // retrieve data on a National Provider Identifier fro
 	return this
 }
 
+this.flatJSON=function(s,n){ // flatens json structure into a 1st degree object
+	if(!n){n=""}
+	var y={};
+	Object.getOwnPropertyNames(s).map(function(f){
+		if(typeof(s[f])!="object"){
+			y[n+f]=s[f]
+		} else {
+			var yy= openHealth.flatJSON(s[f],f+'_')
+			Object.getOwnPropertyNames(yy).map(function(ff){
+				y[ff]=yy[ff]
+			})
+		}
+	})
+	return y
+}
+
 
 
 }

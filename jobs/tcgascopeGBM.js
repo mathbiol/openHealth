@@ -104,7 +104,7 @@ openHealth.require('tcga',function(){
 				})
 				ss.sort().forEach(function(s,i){
 					var pr = document.createElement('p')
-					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://130.245.124.21/camicroscope/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
+					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://reserve4.informatics.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
 					slideImages.appendChild(pr)
 				})
 
