@@ -10,7 +10,7 @@ openHealth.bloomNPI=function(npi,fun){
         x = openHealth.flatJSON(x)
         fun(x)
     }
-    $.getScript("http://www.bloomapi.com/api/npis/"+npi+"?callback=openHealth.bloomNPI.npi"+npi)
+    $.getScript("https://www.bloomapi.com/api/npis/"+npi+"?callback=openHealth.bloomNPI.npi"+npi)
 }
 
 // Assemble UI 
