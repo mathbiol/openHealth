@@ -25,7 +25,7 @@ retrieveNpiData.onclick=function(){
     var docs=[]
     gotNPIs=function(docs){
         console.log('retrieved '+docs.length+' reccords')
-        openHealthJob.innerHTML='Retrieved '+docs.length+' reccords from <a href="https://www.bloomapi.com" target="_blank">www.bloomapi.com</a> (Thank you!)<br><div id="divNPIs">Add Column<select id="addField"></select><div id="npiTable"></div></div>'
+        openHealthJob.innerHTML='Retrieved '+docs.length+' reccords from <a href="https://www.bloomapi.com" target="_blank">www.bloomapi.com</a> (Thank you!)<br><div id="divNPIs">Add Column<select id="addField"></select><hr><div id="npiTable"></div></div>'
         d=docs
         // list fields
         var flds={}
