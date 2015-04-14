@@ -84,6 +84,14 @@ retrieveNpiData.onclick=function(){
             tdc.style.padding=5
             tdc.style.color="maroon"
             tdc.style.border="1px solid maroon"
+            tdc.onclick=function(){
+                for(var i=0;i<trs.length;i++){
+                    var x = document.getElementById(c+'_'+i)
+                    x.parentElement.removeChild(x)
+                }
+                var x = document.getElementById(c+'_head')
+                x.parentElement.removeChild(x)
+            }
             headTr.appendChild(tdc)
             trs.forEach(function(t,i){
                 var tdi=td(c+'_'+i,docs[i][c])
