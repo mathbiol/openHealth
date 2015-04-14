@@ -76,7 +76,8 @@ retrieveNpiData.onclick=function(){
             addField.appendChild(op)
         })
         addField.onchange=function(s,z){
-            addColumn(s.srcElement.selectedOptions[0].textContent)
+            //addColumn(s.srcElement.selectedOptions[0].textContent)
+            addColumn(this.options[this.value].textContent)
         }
         var addColumn=function(c){
             console.log('column "'+c+'" added to table')
