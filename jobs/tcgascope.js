@@ -107,7 +107,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             		pp.map(function(pi){
             			var di = openHealth.tcga.dt.gbmDx[pi]
             			var a = document.createElement('a')
-            			a.href="http://reserve4.informatics.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+di
+            			a.href="http://uhmc-bmi-u24p.uhmc.sunysb.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+di
             			a.textContent=di
             			a.target="_blank"
             			var pa = document.createElement('p')
@@ -154,7 +154,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 				})
 				ss.sort().forEach(function(s,i){
 					var pr = document.createElement('p')
-					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://reserve4.informatics.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
+					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://uhmc-bmi-u24p.uhmc.sunysb.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
 					slideImages.appendChild(pr)
 				})
 				listDxSlides(pp)
