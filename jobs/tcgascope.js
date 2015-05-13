@@ -95,20 +95,29 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             			x=JSON.parse(x.replace(/\'/g,'"'))
             			var y = {} // index of diagnostic images per patient
             			x.map(function(xi){
-            				y[xi.patientid]=xi.caseid
+            				if(!y[xi.patientid]){
+            					y[xi.patientid]=[xi.caseid]
+            				} else {
+            					y[xi.patientid].push(xi.caseid)
+            				}
+            				
             			})
             			openHealth.tcga.dt.gbmDx=y
             			listDxSlides(pp)
             		})
             	}else{
-            		pp=pp.filter(function(pi){return openHealth.tcga.dt.gbmDx[pi]})
+            		var pp0=pp.filter(function(pi){return openHealth.tcga.dt.gbmDx[pi]})
+            		pp=[]
+            		pp0.map(function(pi){
+            			pp=pp.concat(openHealth.tcga.dt.gbmDx[pi])
+            		})
             		diagnosticImagesHeader.textContent=' Diagnostic Images ('+pp.length+'):'
             		diagnosticImages.innerHTML="" // clear
             		pp.map(function(pi){
-            			var di = openHealth.tcga.dt.gbmDx[pi]
+            			//var di = openHealth.tcga.dt.gbmDx[pi]
             			var a = document.createElement('a')
-            			a.href="http://uhmc-bmi-u24p.uhmc.sunysb.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+di
-            			a.textContent=di
+            			a.href="http://uhmc-bmi-u24p.uhmc.sunysb.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+pi
+            			a.textContent=pi
             			a.target="_blank"
             			var pa = document.createElement('p')
             			pa.appendChild(a)
