@@ -122,6 +122,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
             }
 			var listSlides=function(){
+				slideImages.parentNode.hidden="true"
 				if(R.gender.FEMALE.c+R.gender.MALE.c>R.section_location.BOTTOM.c+R.section_location.TOP.c){
 					var parm = 'section_location'
 				} else {var parm = 'gender'}
