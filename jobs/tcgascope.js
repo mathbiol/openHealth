@@ -80,12 +80,47 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
         // ---- UI Dimensional scalling ---
         openHealth.getScript(["https://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","https://square.github.io/crossfilter/crossfilter.v1.min.js","https://dc-js.github.io/dc.js/js/dc.js","https://dc-js.github.io/dc.js/css/dc.css"],function(){ // after satisfying d3 dependency
             openHealthJobMsg.textContent="Assembling charts ..."
-            openHealthJobDC.innerHTML='<table cellpadding="10px"><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div><div>Location:</div><div id="section_location"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>Race:</div><div id="race"></div><div>Gender:</div><div id="gender"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div style="color:blue">Karnofsky Score:</div><div id="karnofsky_performance_score" style="border:solid;border-color:blue;box-shadow:10px 10px 5px #888888"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table></td><td style="vertical-align:top"><h3>GBM Tumor progression</h3><div id="tumorProgression"></div><b>Legend</b>: color indicates Karnofsky performance score (see framed bar chart); diameter indicates number of images</td></tr></table><table><tr><td style="vertical-align:top"><div id="tcgaPatientsHeader">TCGA patients:</div><div id="tcgaPatients"></div></td><td style="vertical-align:top"><div id="slideImagesHeader">Slide Images:</div><div id="slideImages"></div></td><td style="vertical-align:top"><div id="buttonResults"></div></td></tr></table>'
+            openHealthJobDC.innerHTML='<table cellpadding="10px"><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div><div>Location:</div><div id="section_location"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>Race:</div><div id="race"></div><div>Gender:</div><div id="gender"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div style="color:blue">Karnofsky Score:</div><div id="karnofsky_performance_score" style="border:solid;border-color:blue;box-shadow:10px 10px 5px #888888"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table></td><td style="vertical-align:top"><h3>GBM Tumor progression</h3><div id="tumorProgression"></div><b>Legend</b>: color indicates Karnofsky performance score (see framed bar chart); diameter indicates number of images</td></tr></table><table><tr><td style="vertical-align:top"><div id="tcgaPatientsHeader">TCGA patients:</div><div id="tcgaPatients"></div></td><td style="vertical-align:top"><div id="slideImagesHeader">Slide Images:</div><div id="slideImages"></div></td><td style="vertical-align:top"><div id="diagnosticImagesHeader">Diagnostic Images:</div><div id="diagnosticImages"></div></td><td style="vertical-align:top"><div id="buttonResults"></div></td></tr></table>'
             var docs = openHealth.tcga.dt.gbmDocs
             var tab = openHealth.tcga.dt.gbmTab
 
             var C = {}, D={}, G={}, U={}, R={}
             var P={},S={}  // list patients and slides
+            var listDxSlides=function(pp){
+            	// check DxImages available already
+            	if(!openHealth.tcga.dt.gbmDx){
+            		openHealth.getText('http://sbu-bmi.github.io/appliedApps/gbm_patientids.json',function(x){
+            			x=x.replace(/}/g,'},')
+            			x='['+x.slice(0,-2)+']'
+            			x=JSON.parse(x.replace(/\'/g,'"'))
+            			var y = {} // index of diagnostic images per patient
+            			x.map(function(xi){
+            				y[xi.patientid]=xi.caseid
+            			})
+            			openHealth.tcga.dt.gbmDx=y
+            			listDxSlides(pp)
+            		})
+            	}else{
+            		pp=pp.filter(function(pi){return openHealth.tcga.dt.gbmDx[pi]})
+            		diagnosticImagesHeader.textContent=' Diagnostic Images ('+pp.length+'):'
+            		diagnosticImages.innerHTML="" // clear
+            		pp.map(function(pi){
+            			var di = openHealth.tcga.dt.gbmDx[pi]
+            			var a = document.createElement('a')
+            			a.href="http://reserve4.informatics.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+di
+            			a.textContent=di
+            			a.target="_blank"
+            			var pa = document.createElement('p')
+            			pa.appendChild(a)
+            			diagnosticImages.appendChild(pa)
+
+
+            		})
+				
+            		4
+            	}
+
+            }
 			var listSlides=function(){
 				if(R.gender.FEMALE.c+R.gender.MALE.c>R.section_location.BOTTOM.c+R.section_location.TOP.c){
 					var parm = 'section_location'
@@ -100,6 +135,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 				})
 				slideImagesHeader.textContent=' Slide Images ('+ss.length+'):'
 				tcgaPatientsHeader.textContent=' TCGA patients ('+pp.length+'):'
+				diagnosticImagesHeader.textContent=' Diagnostic Images (...):'
 				tcgaPatients.innerHTML=""
 				slideImages.innerHTML=""
 				openHealth.tcga.resultsPatient=function(x){
@@ -121,7 +157,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://reserve4.informatics.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
 					slideImages.appendChild(pr)
 				})
-
+				listDxSlides(pp)
 			}
 
             var cf=crossfilter(docs);
@@ -183,7 +219,6 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             	S[parm][s]={c:0}
             })
             
-
             if(!Uparm){
             	U[parm] = openHealth.tcga.sortPercent(openHealth.unique(tab[parm]))
             } else {
