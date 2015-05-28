@@ -266,6 +266,17 @@ this.tab2docs=function(tab){
     return docs
 }
 
+this.arr2docs=function(arr){ // convert table array into array of docs
+	var docs = []
+	arr.slice(1,-1).map(function(a,i){ // for each row past the first
+		docs[i-1]={}
+		arr[0].map(function(c,j){ // first row of arr has the column headers
+			docs[i-1][c]=a[j]
+		})
+	})
+	return docs
+}
+
 this.docs2docs=function(docs){ // recognize numerical types
     return this.tab2docs(this.docs2tab(docs))
 }
