@@ -990,7 +990,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             var listDxSlides=function(pp){
             	// check DxImages available already
             	if(!openHealth.tcga.dt.lggDx){
-            		openHealth.getText('http://sbu-bmi.github.io/appliedApps/lgg_patientids.json',function(x){
+            		openHealth.getText('https://sbu-bmi.github.io/appliedApps/lgg_patientids.json',function(x){
             			x=x.replace(/}/g,'},')
             			x='['+x.slice(0,-2)+']'
             			x=JSON.parse(x.replace(/\'/g,'"'))
