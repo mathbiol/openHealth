@@ -92,8 +92,8 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             	// check DxImages available already
             	if(!openHealth.tcga.dt.gbmDx){
             		openHealth.getText('https://sbu-bmi.github.io/appliedApps/gbm_patientids.json',function(x){
-            			x=x.replace(/}/g,'},')
-            			x='['+x.slice(0,-2)+']'
+            			//x=x.replace(/}/g,'},')
+            			//x='['+x.slice(0,-2)+']'
             			x=JSON.parse(x.replace(/\'/g,'"'))
             			var y = {} // index of diagnostic images per patient
             			x.map(function(xi){
