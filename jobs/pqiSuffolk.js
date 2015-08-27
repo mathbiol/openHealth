@@ -7,6 +7,11 @@ console.log("pqiSuffolk.js")
 // start with the dependencies
 openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","//dc-js.github.io/dc.js/js/dc.js","//dc-js.github.io/dc.js/css/dc.css","jobs/zipSuffolkPop.js"],function(){ // after satisfying d3 dependency
 
+	// check for new version
+	if(localStorage.pqiSuffolk!='1.0'){
+		localStorage.pqiSuffolk='1.0' // Aug 2015 - SPARCS 2013 data becomes available 
+		openHealth.getJSON.cache=false
+	}
 	
     pqi=(function(){
 		var res={};// results
