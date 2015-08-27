@@ -58,7 +58,8 @@ this.getJSON=function(url,fun,store){
     if(!this.getJSON.cache){ // if caching not enabled
     	if(!store){store=openHealth.getJSON.store}
         this.xhr(url,function(x){
-        	fun(JSON.parse(x.target.responseText))
+        	var y = JSON.parse(x.target.responseText);
+        	fun(y)
         	if(store){localforage.setItem(encodeURIComponent(url),y);} // if store is true cache nonetheless
         });
     } else {
