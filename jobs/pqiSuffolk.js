@@ -23,8 +23,17 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 			dt=openHealth.tab2docs(tab);
 			res.dt=dt
             document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<h4 style="color:navy">Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009</h4> <span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-            document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable">  <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> </h4><div id="numTable"></div>';
-            
+            document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"> <input type="button" value="run clock" id="runClock"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable">  <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> </h4><div id="numTable"></div>';
+            runClock.onclick=function(){
+            	//console.log(Date())
+            	if(runClock.value=="run clock"){
+            		pqi.playMovie()
+            		runClock.value="stop clock"
+            	}else{
+            		clearInterval(pqi.playMovie.t)
+            		runClock.value="run clock"
+            	}
+            }
             renderAll=function(zipMap){
             	pqi.zipMap=zipMap;
             	pqi.zipProperties={};
@@ -359,8 +368,19 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 				res.charts={C_Map:C_Map,C_Pie:C_Pie,C_Obs:C_Obs,G_zips:G_zips,G_Observed:G_Observed,G_years:G_years}//,C_Exp:C_Exp}
 				var btReset=document.getElementById('dcReset');
 	            btReset.onclick=function(){
+	            	if(pqi.playMovie.t){clearInterval(pqi.playMovie.t)}
     	        	document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<h4 style="color:navy">Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009</h4> <span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-        	    	document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable"> <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> </h4><div id="numTable"></div>';
+        	    	document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"> <input type="button" value="run clock" id="runClock"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable"> <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> </h4><div id="numTable"></div>';
+		            runClock.onclick=function(){
+						if(runClock.value=="run clock"){
+            				pqi.playMovie()
+            				runClock.value="stop clock"
+            			}else{
+            				clearInterval(pqi.playMovie.t)
+            				runClock.value="run clock"
+            			}
+            		}
+
             		openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",renderAll)
             	}
             	document.getElementById("genTable").onclick=function(){
@@ -395,12 +415,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 				
                 
             }
-
-
             openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",renderAll) // <-- it all starts here
-            
-            
-
             
             
         })
@@ -411,6 +426,21 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         		console.log('table updated '+Date());
         	}
         	return this
+        }
+
+        res.playMovie=function(){
+        	// slices
+        	var ss = $('g > .pie-slice > path')
+        	var n = ss.length
+        	var i = -1
+        	res.playMovie.t = setInterval(function(){
+        		if(i<n-1){i++}else{i=0};var j = i-1;if(j<0){j=n-1}
+        		console.log('clock run '+Date())
+        		ss[i].__onclick()
+        		if(ss[j].parentNode.classList.contains('selected')){ss[j].__onclick()} // make sure previous slice is deselected
+        		
+        	},2000)
+
         }
 		
 		return res
