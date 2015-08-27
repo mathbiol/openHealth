@@ -148,8 +148,9 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 						res.G_Expect_reduce[v.zip2].p+=v.observed_rate_per_100_000_people;
 						res.G_Expect_reduce[v.zip2].expt+=v.expected_rate_per_100_000_people;
 						res.G_Expect_reduce[v.zip2].n+=1;
-						if(res.G_Expect_reduce[v.zip2].n>0){return res.G_Expect_reduce[v.zip2].p/res.G_Expect_reduce[v.zip2].n}
-						else{return 0}					
+						var z = res.G_Expect_reduce[v.zip2].p/res.G_Expect_reduce[v.zip2].n
+						if(z>0){return z}
+						else{return null}					
 					},
 					// reduce out
 					function(p,v){
@@ -157,12 +158,13 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 						res.G_Expect_reduce[v.zip2].expt-=v.expected_rate_per_100_000_people;
 						res.G_Expect_reduce[v.zip2].n-=1;
 						//res.G_Expect_reduce[v.pqi_name].ratio=res.G_Expect_reduce[v.pqi_name].p/res.G_Expect_reduce[v.pqi_name].expt;
-						if(res.G_Expect_reduce[v.zip2].n>0){return res.G_Expect_reduce[v.zip2].p/res.G_Expect_reduce[v.zip2].n}
-						else{return 0}
+						var z = res.G_Expect_reduce[v.zip2].p/res.G_Expect_reduce[v.zip2].n
+						if(z>0){return z}
+						else{return null}
 						//return res.G_Observed_reduce[v.pqi_name].p/res.G_Observed_reduce[v.pqi_name].expt
 					},
 					// ini
-					function(){return 0}
+					function(){return null}
             	)
 				
 				
@@ -287,13 +289,15 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         			.elasticX(true)
 					.r(d3.scale.linear().domain([0, 4000]))
 					.keyAccessor(function (r) { 			// <-- X values
-						if(pqi.G_Expect_reduce[r.key].n){pqi.G_Expect_reduce[r.key].x=pqi.G_Expect_reduce[r.key].expt/pqi.G_Expect_reduce[r.key].n}
-						else{pqi.G_Expect_reduce[r.key].x=0}
+						if((pqi.G_Expect_reduce[r.key].n>0)&(pqi.G_Expect_reduce[r.key].expt>0)){
+							pqi.G_Expect_reduce[r.key].x=pqi.G_Expect_reduce[r.key].expt/pqi.G_Expect_reduce[r.key].n}
+						else{pqi.G_Expect_reduce[r.key].x=null}
 						return pqi.G_Expect_reduce[r.key].x
 					})
 					.valueAccessor(function (r) { 			// <-- Y values
-						if(pqi.G_Expect_reduce[r.key].n){pqi.G_Expect_reduce[r.key].y=pqi.G_Expect_reduce[r.key].p/pqi.G_Expect_reduce[r.key].n}
-						else{pqi.G_Expect_reduce[r.key].y=0}
+						if((pqi.G_Expect_reduce[r.key].n>0)&(pqi.G_Expect_reduce[r.key].p>0)){
+							pqi.G_Expect_reduce[r.key].y=pqi.G_Expect_reduce[r.key].p/pqi.G_Expect_reduce[r.key].n}
+						else{pqi.G_Expect_reduce[r.key].y=null}
 						return pqi.G_Expect_reduce[r.key].y
 					})
 					.radiusValueAccessor(function (r) { 			// <-- X values
