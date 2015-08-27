@@ -11,6 +11,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 	if(localStorage.pqiSuffolk!='1.0'){
 		localStorage.pqiSuffolk='1.0' // Aug 2015 - SPARCS 2013 data becomes available 
 		openHealth.getJSON.cache=false
+		openHealth.getJSON.store=true
 	}
 	
     pqi=(function(){
