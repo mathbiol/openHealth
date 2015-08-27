@@ -54,10 +54,12 @@ this.xhr=function(url,meth,fun){ // XMLHttpRequest
     return r
 }
 
-this.getJSON=function(url,fun){
-    
+this.getJSON=function(url,fun,store){    
     if(!this.getJSON.cache){ // if caching not enabled
-        this.xhr(url,function(x){fun(JSON.parse(x.target.responseText))});
+        this.xhr(url,function(x){
+        	fun(JSON.parse(x.target.responseText))
+        	if(store){localforage.setItem(encodeURIComponent(url),y);} // if store is true cache nonetheless
+        });
     } else {
         var key = encodeURIComponent(url);
         localforage.getItem(key,function(x){
