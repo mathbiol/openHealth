@@ -433,15 +433,14 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         	// slices
         	var ss = $('g > .pie-slice > path')
         	var n = ss.length
-        	var i = -1
+        	if(!pqi.playMovie.i){pqi.playMovie.i=-1} // the time slice being clicked
         	res.playMovie.t = setInterval(function(){
-        		if(i<n-1){i++}else{i=0};var j = i-1;if(j<0){j=n-1}
+        		if(pqi.playMovie.i<n-1){pqi.playMovie.i++}else{pqi.playMovie.i=0}
+        		var j = pqi.playMovie.i-1;if(j<0){j=n-1}
         		console.log('clock run '+Date())
-        		ss[i].__onclick()
-        		if(ss[j].parentNode.classList.contains('selected')){ss[j].__onclick()} // make sure previous slice is deselected
-        		
+        		ss[pqi.playMovie.i].__onclick()
+        		if(ss[j].parentNode.classList.contains('selected')){ss[j].__onclick()} // make sure previous slice is deselected        		
         	},2000)
-
         }
 		
 		return res
