@@ -163,7 +163,15 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 				openHealth.tcga.resultsPatient=function(x){
 					//var key = x.textContent
 					//buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
-					moreInfo.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
+					
+					buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
+					var fscape = fscape='http://sbu-bmi.github.io/featurescape/?https://fscape-132294.nitrousapp.com/?find={"provenance.analysis_execution_id":"yi-algo-v2","image.subjectid":"'+patient[x.textContent]["bcr_patient_barcode"]+'"};fun/u24demo.js'
+					moreInfo.innerHTML=' <input id="fscapeButton" style="color:blue" type="button" value="feature landscape (if available) for '+patient[x.textContent]["bcr_patient_barcode"]+'"><pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
+					fscapeButton.onclick=function(){
+						window.open(fscape)
+					}
+
+					//moreInfo.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
 					
 					//console.log(x)
 				}
@@ -1062,7 +1070,12 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 				openHealth.tcga.resultsPatient=function(x){
 					//var key = x.textContent
 					buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
-					moreInfo.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
+					var fscape = fscape='http://sbu-bmi.github.io/featurescape/?https://fscape-132294.nitrousapp.com/?find={"provenance.analysis_execution_id":"yi-algo-v2","image.subjectid":"'+patient[x.textContent]["bcr_patient_barcode"]+'"};fun/u24demo.js'
+					moreInfo.innerHTML=' <input id="fscapeButton" style="color:blue" type="button" value="feature landscape (if available) for '+patient[x.textContent]["bcr_patient_barcode"]+'"><pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
+					fscapeButton.onclick=function(){
+						window.open(fscape)
+					}
+					//moreInfo.innerHTML=' <a href="'+fscape+'" target="_blank"> feature landscape (if available)</a><pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
 					//console.log(x)
 				}
 				openHealth.tcga.resultsSlide=function(x){
