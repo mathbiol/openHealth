@@ -1935,7 +1935,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 					//var key = x.textContent
 					buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
 					//var fscape = fscape='http://sbu-bmi.github.io/featurescape/?https://fscape-132294.nitrousapp.com/?find={"provenance.analysis_execution_id":"yi-algo-v2","image.subjectid":"'+patient[x.textContent]["bcr_patient_barcode"]+'"};fun/u24demo.js'
-					var fscape = 'http://sbu-bmi.github.io/featurescape/?http://129.49.249.191:3000/?limit=1000&find={%22randval%22:{%22$gte%22:'+Math.random()+'},%22image.caseid%22:%22'+x.textContent+'-01Z-00-DX1%22};fun/u24demo.js'
+					var fscape = 'http://sbu-bmi.github.io/featurescape/?http://129.49.249.191:3000/?limit=1000&find={%22randval%22:{%22$gte%22:'+(Math.random()*0.90)+'},%22image.caseid%22:%22'+x.textContent+'-01Z-00-DX1%22};fun/u24demo.js'
 					moreInfo.innerHTML=' <input id="fscapeButton" style="color:blue" type="button" value="feature landscape (if available) for '+patient[x.textContent]["bcr_patient_barcode"]+'-01Z-00-DX1"><pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
 					fscapeButton.onclick=function(){
 						window.open(fscape)
