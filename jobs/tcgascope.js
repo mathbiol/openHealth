@@ -165,7 +165,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 					//buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
 					
 					buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
-					var fscape = fscape='http://sbu-bmi.github.io/featurescape/?https://fscape-132294.nitrousapp.com/?find={"provenance.analysis_execution_id":"yi-algo-v2","image.subjectid":"'+patient[x.textContent]["bcr_patient_barcode"]+'"};fun/u24demo.js'
+					var fscape ='http://sbu-bmi.github.io/featurescape/?http://129.49.249.191:3000/?find={"provenance.analysis_execution_id":"lung-features","image.subjectid":"'+patient[x.textContent]["bcr_patient_barcode"]+'"}&limit=1000;fun/u24demo.js'
 					moreInfo.innerHTML=' <input id="fscapeButton" style="color:blue" type="button" value="feature landscape (if available) for '+patient[x.textContent]["bcr_patient_barcode"]+'"><pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
 					fscapeButton.onclick=function(){
 						window.open(fscape)
@@ -434,7 +434,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
     }
 
-    get_biospecimen_slide_gbm=function(){
+    get_biospecimen_slide_gbm2=function(){
         //localforage.removeItem('biospecimen_slide_gbm')
         localforage.getItem('biospecimen_slide_gbm',function(x){
             if(!x){
@@ -457,7 +457,33 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
         })
     }
 
-    get_biospecimen_slide_lgg=function(){
+    get_biospecimen_slide_gbm=function(){
+        //localforage.removeItem('biospecimen_slide_gbm')
+        localforage.getItem('biospecimen_slide_gbm',function(x){
+        	// flag both absence of data and bad data for loading
+        	var fl = true
+        	if(x){
+        		if((!x['<html>'])&&(!x['<head>'])){
+        			fl=false
+        		}
+        	}
+            if(fl){
+                $.getJSON('jobs/biospecimen_slide_gbm.json',function(x){
+                	openHealth.tcga.dt['biospecimen_slide_gbm']=x
+                    localforage.setItem('biospecimen_slide_gbm',x)
+                    console.log('biospecimen_slide_gbm loaded from TCGA and cached for this machine')
+                    GBMfun()
+               	})
+            } else{
+                console.log('biospecimen_slide_gbm retrieved from cache')
+                openHealth.tcga.dt['biospecimen_slide_gbm']=x
+                GBMfun()
+            }
+
+        })
+    }
+
+    get_biospecimen_slide_lgg2=function(){
         //localforage.removeItem('biospecimen_slide_gbm')
         localforage.getItem('biospecimen_slide_lgg',function(x){
             if(!x){
@@ -480,13 +506,56 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
         })
     }
 
+    get_biospecimen_slide_lgg=function(){
+
+
+        //localforage.removeItem('biospecimen_slide_lgg')
+        localforage.getItem('biospecimen_slide_lgg',function(x){
+        	var fl = true
+        	if(x){
+        		if((!x['<html>'])&&(!x['<head>'])){
+        			fl=false
+        		}
+        	}
+
+        	if(fl){
+                $.getJSON('jobs/biospecimen_slide_lgg.json',function(x){
+                	openHealth.tcga.dt['biospecimen_slide_lgg']=x
+                    localforage.setItem('biospecimen_slide_lgg',x)
+                    console.log('biospecimen_slide_lgg loaded from TCGA and cached for this machine')
+                    LGGfun2()
+               	})
+            } else{
+                console.log('biospecimen_slide_lgg retrieved from cache')
+                openHealth.tcga.dt['biospecimen_slide_lgg']=x
+                LGGfun2()
+            }
+        })
+    }
+
 
 
 	// ---> GBM <--- //
 	doGBM=function(){
 		localforage.getItem('clinical_patient_gbm',function(x){
         //localforage.removeItem('clinical_patient_gbm')
-        if(!x){
+        var fl = true
+        if(x){
+        	if((!x['<html>'])&&(!x['<head>'])){
+        		fl=false
+        	}
+        }
+
+        if(fl){
+        	$.getJSON('jobs/clinical_patient_gbm.json',function(x){
+                openHealth.tcga.dt['clinical_patient_gbm']=x
+                localforage.setItem('clinical_patient_gbm',x)
+                console.log('clinical_patient_gbm loaded from TCGA and cached for this machine')
+                get_biospecimen_slide_gbm()
+            })
+
+
+        	/*
             openHealth.tcga.getTable("gbm/bcr/biotab/clin/nationwidechildrens.org_clinical_patient_gbm.txt",
               function(x){
                 openHealth.tcga.dt['clinical_patient_gbm']=x
@@ -497,6 +566,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
               1,
               3
             )
+            */
         } else{
             console.log('clinical_patient_gbm retrieved from cache')
             openHealth.tcga.dt['clinical_patient_gbm']=x
