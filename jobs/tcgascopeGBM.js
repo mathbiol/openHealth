@@ -1,4 +1,4 @@
-console.log('tcgascope.js loaded')
+console.log('tcgascopeGBM.js loaded')
 
 openHealth.require('tcga',function(){
     // GBM
@@ -421,7 +421,7 @@ openHealth.require('tcga',function(){
 
     }
 
-    get_biospecimen_slide_gbm=function(){
+    get_biospecimen_slide_gbm2=function(){
         //localforage.removeItem('biospecimen_slide_gbm')
         localforage.getItem('biospecimen_slide_gbm',function(x){
             if(!x){
@@ -435,6 +435,32 @@ openHealth.require('tcga',function(){
                 0,
                 2
                 )
+            } else{
+                console.log('biospecimen_slide_gbm retrieved from cache')
+                openHealth.tcga.dt['biospecimen_slide_gbm']=x
+                GBMfun()
+            }
+
+        })
+    }
+
+    get_biospecimen_slide_gbm=function(){
+        //localforage.removeItem('biospecimen_slide_gbm')
+        localforage.getItem('biospecimen_slide_gbm',function(x){
+        	// flag both absence of data and bad data for loading
+        	var fl = true
+        	if(x){
+        		if((!x['<html>'])&&(!x['<head>'])){
+        			fl=false
+        		}
+        	}
+            if(fl){
+                $.getJSON('jobs/biospecimen_slide_gbm.json',function(x){
+                	openHealth.tcga.dt['biospecimen_slide_gbm']=x
+                    localforage.setItem('biospecimen_slide_gbm',x)
+                    console.log('biospecimen_slide_gbm loaded from TCGA and cached for this machine')
+                    GBMfun()
+               	})
             } else{
                 console.log('biospecimen_slide_gbm retrieved from cache')
                 openHealth.tcga.dt['biospecimen_slide_gbm']=x
