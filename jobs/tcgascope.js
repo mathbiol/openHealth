@@ -34,7 +34,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             else{return parseInt(xi)}	// karnofsky_performance_score
         })
 
-        
+
 
 
 
@@ -60,7 +60,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
                 xi.karnofsky_performance_score=p.karnofsky_performance_score
             }else{
                 console.log('patient '+bcr+' not found for slide '+i)
-            }           
+            }
             return xi
         })
         // remove docs with no patient info
@@ -102,7 +102,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             				} else {
             					y[xi.patientid].push(xi.caseid)
             				}
-            				
+
             			})
             			openHealth.tcga.dt.gbmDx=y
             			listDxSlides(pp)
@@ -118,7 +118,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             		/*pp.map(function(pi){
             			//var di = openHealth.tcga.dt.gbmDx[pi]
             			var a = document.createElement('a')
-            			a.href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+pi
+            			a.href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId="+pi
             			a.textContent=pi
             			a.target="_blank"
             			var pa = document.createElement('p')
@@ -132,14 +132,14 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             				var tp = document.getElementById('dxSlide_'+pt) // target patient element
             				var dx = document.createElement('p')
             				dx.id="link_"+p
-            				dx.innerHTML='<a href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+p+'" target=_blank>'+p+'</a>'
+            				dx.innerHTML='<a href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId='+p+'" target=_blank>'+p+'</a>'
             				tp.appendChild(dx)
             			}
 
             		})
-            	
+
             	}
-            	
+
 
             }
 			var listSlides=function(){
@@ -163,7 +163,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 				openHealth.tcga.resultsPatient=function(x){
 					//var key = x.textContent
 					//buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
-					
+
 					buttonResults.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
 					var fscape ='http://sbu-bmi.github.io/featurescape/?http://129.49.249.191:3000/?find={"provenance.analysis_execution_id":"lung-features","image.subjectid":"'+patient[x.textContent]["bcr_patient_barcode"]+'"}&limit=1000;fun/u24demo.js'
 					moreInfo.innerHTML=' <input id="fscapeButton" style="color:blue" type="button" value="feature landscape (if available) for '+patient[x.textContent]["bcr_patient_barcode"]+'"><pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
@@ -172,7 +172,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 					}
 
 					//moreInfo.innerHTML='<pre>'+JSON.stringify(patient[x.textContent],null,3)+'</pre>'
-					
+
 					//console.log(x)
 				}
 				openHealth.tcga.resultsSlide=function(x){
@@ -196,18 +196,18 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 							pr.appendChild(c)
 						})
 					}*/
-					
+
 				})
 				ss.sort().forEach(function(s,i){
 					var pr = document.createElement('p')
-					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
+					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
 					slideImages.appendChild(pr)
 				})
 				listDxSlides(pp)
 			}
 
             var cf=crossfilter(docs);
-            
+
 
 			var addRowChard=function(parm,Uparm,fun){
             D[parm]=cf.dimension(function(d){
@@ -224,7 +224,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             })
             G[parm]=D[parm].group().reduce(
               // reduce in
-		      function(p,v){		      	
+		      function(p,v){
 		      	return R[parm][v[parm]].c+=1
 		      },
 		      // reduce out
@@ -244,13 +244,13 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
-           		
+
            	if(fun){
 				fun(C[parm])
 			}
 
 			}
-			// - - - - version that tracks slides and images - - - - 
+			// - - - - version that tracks slides and images - - - -
 			var addRowChard2=function(parm,Uparm,fun){
             D[parm]=cf.dimension(function(d){
                 return d[parm]
@@ -264,7 +264,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 			openHealth.tcga.dt.gbmTab.bcr_slide_barcode.map(function(s){
             	S[parm][s]={c:0}
             })
-            
+
             if(!Uparm){
             	U[parm] = openHealth.tcga.sortPercent(openHealth.unique(tab[parm]))
             } else {
@@ -278,13 +278,13 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
               // reduce in
 		      function(p,v){
 		      	P[parm][v.patient].c=P[parm][v.patient].c+1
-		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c+1	      	
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c+1
 		      	return R[parm][v[parm]].c+=1
 		      },
 		      // reduce out
 		      function(p,v){
 		      	P[parm][v.patient].c=P[parm][v.patient].c-1
-		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c-1	      	
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c-1
 		      	return R[parm][v[parm]].c-=1
 		      },
 			  // ini
@@ -300,7 +300,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
-           		
+
            	if(fun){
 				fun(C[parm])
 			}
@@ -309,7 +309,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
 			// - - - - - - - - - - - - -
 
-			
+
 
 			addRowChard('percent_necrosis')
 			addRowChard('percent_tumor_cells')
@@ -334,7 +334,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 						})
 				}
 			)
-			
+
 			C.tumorProgression = dc.bubbleChart("#tumorProgression");
 			D.tumorProgression = cf.dimension(function(d){return d.patient})
 			R.tumorProgression={}
@@ -376,7 +376,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 						tcgaPatients.appendChild(p)
        				}
        				*/
-       				
+
 
        				return v.value/2
        			})
@@ -395,7 +395,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 					if(isNaN(v)){return -1}
 					else{return v}
 				})
-		
+
 		    dc.renderAll();
 
             $('.dc-chart g.row text').css('fill','black')
@@ -429,7 +429,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
         })
 
-                
+
 
 
     }
@@ -577,7 +577,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
 	}
     doGBM()
-    
+
     // --> LGG <--
     doLGG=function(){
 		localforage.getItem('clinical_patient_lgg',function(x){
@@ -625,7 +625,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             else{return parseInt(xi)}	// karnofsky_performance_score
         })
 
-        
+
 
 
 
@@ -651,7 +651,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
                 xi.karnofsky_performance_score=p.karnofsky_performance_score
             }else{
                 console.log('patient '+bcr+' not found for slide '+i)
-            }           
+            }
             return xi
         })
         // remove docs with no patient info
@@ -691,7 +691,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             				} else {
             					y[xi.patientid].push(xi.caseid)
             				}
-            				
+
             			})
             			openHealth.tcga.dt.lggDx=y
             			listDxSlides(pp)
@@ -707,7 +707,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             		pp.map(function(pi){
             			//var di = openHealth.tcga.dt.lggDx[pi]
             			var a = document.createElement('a')
-            			a.href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+pi
+            			a.href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId="+pi
             			a.textContent=pi
             			a.target="_blank"
             			var pa = document.createElement('p')
@@ -716,7 +716,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
 
             		})
-				
+
             		4
             	}
 
@@ -755,14 +755,14 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 				})
 				ss.sort().forEach(function(s,i){
 					var pr = document.createElement('p')
-					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
+					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
 					slideImages.appendChild(pr)
 				})
 				listDxSlides(pp)
 			}
 
             var cf=crossfilter(docs);
-            
+
 
 			var addRowChard=function(parm,Uparm,fun){
             D[parm]=cf.dimension(function(d){
@@ -779,7 +779,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             })
             G[parm]=D[parm].group().reduce(
               // reduce in
-		      function(p,v){		      	
+		      function(p,v){
 		      	return R[parm][v[parm]].c+=1
 		      },
 		      // reduce out
@@ -799,13 +799,13 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
-           		
+
            	if(fun){
 				fun(C[parm])
 			}
 
 			}
-			// - - - - version that tracks slides and images - - - - 
+			// - - - - version that tracks slides and images - - - -
 			var addRowChard2=function(parm,Uparm,fun){
             D[parm]=cf.dimension(function(d){
                 return d[parm]
@@ -819,7 +819,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 			openHealth.tcga.dt.lggTab.bcr_slide_barcode.map(function(s){
             	S[parm][s]={c:0}
             })
-            
+
             if(!Uparm){
             	U[parm] = openHealth.tcga.sortPercent(openHealth.unique(tab[parm]))
             } else {
@@ -833,13 +833,13 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
               // reduce in
 		      function(p,v){
 		      	P[parm][v.patient].c=P[parm][v.patient].c+1
-		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c+1	      	
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c+1
 		      	return R[parm][v[parm]].c+=1
 		      },
 		      // reduce out
 		      function(p,v){
 		      	P[parm][v.patient].c=P[parm][v.patient].c-1
-		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c-1	      	
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c-1
 		      	return R[parm][v[parm]].c-=1
 		      },
 			  // ini
@@ -855,7 +855,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
-           		
+
            	if(fun){
 				fun(C[parm])
 			}
@@ -864,7 +864,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
 			// - - - - - - - - - - - - -
 
-			
+
 
 			addRowChard('percent_necrosis')
 			addRowChard('percent_tumor_cells')
@@ -889,7 +889,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 						})
 				}
 			)
-			
+
 			C.tumorProgression = dc.bubbleChart("#tumorProgression");
 			D.tumorProgression = cf.dimension(function(d){return d.patient})
 			R.tumorProgression={}
@@ -931,7 +931,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 						tcgaPatients.appendChild(p)
        				}
        				*/
-       				
+
 
        				return v.value/2
        			})
@@ -950,7 +950,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 					if(isNaN(v)){return -1}
 					else{return v}
 				})
-		
+
 		    dc.renderAll();
 
             $('.dc-chart g.row text').css('fill','black')
@@ -984,7 +984,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
         })
 
-                
+
 
 
     }
@@ -1009,7 +1009,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             else{return parseInt(xi)}	// karnofsky_performance_score
         })
 
-        
+
 
 
 
@@ -1035,7 +1035,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
                 xi.karnofsky_performance_score=p.karnofsky_performance_score
             }else{
                 console.log('patient '+bcr+' not found for slide '+i)
-            }           
+            }
             return xi
         })
         // remove docs with no patient info
@@ -1059,7 +1059,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             //openHealthJobDC.innerHTML='<table cellpadding="10px"><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div><div>Location:</div><div id="section_location"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>Race:</div><div id="race"></div><div>Gender:</div><div id="gender"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div style="color:blue">Karnofsky Score:</div><div id="karnofsky_performance_score" style="border:solid;border-color:blue;box-shadow:10px 10px 5px #888888"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table></td><td style="vertical-align:top"><h3>lgg Tumor progression</h3><div id="tumorProgression"></div><b>Legend</b>: color indicates Karnofsky performance score (see framed bar chart); diameter indicates number of images</td></tr></table><table id="patientSlideTable"><thead><tr><td id="tcgaPatientsHeader">TCGA patients:</td><td id="diagnosticImagesHeader">Diagnostic Images:</td></tr></thead><tr><td style="vertical-align:top"><div id="tcgaPatientsHeader_">TCGA patients:</div><div id="tcgaPatients"></div></td><td style="vertical-align:top"><div id="slideImagesHeader">Slide Images:</div><div id="slideImages"></div></td><td style="vertical-align:top"><div id="diagnosticImagesHeader_">Diagnostic Images:</div><div id="diagnosticImages"></div></td><td style="vertical-align:top"><div id="buttonResults"></div></td></tr></table>'
             //openHealthJobDC.innerHTML='<table cellpadding="10px"><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div><div>Location:</div><div id="section_location"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>Race:</div><div id="race"></div><div>Gender:</div><div id="gender"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div style="color:blue">Karnofsky Score:</div><div id="karnofsky_performance_score" style="border:solid;border-color:blue;box-shadow:10px 10px 5px #888888"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table></td><td style="vertical-align:top"><h3>lgg Tumor progression</h3><div id="tumorProgression"></div><b>Legend</b>: color indicates Karnofsky performance score (see framed bar chart); diameter indicates number of images</td></tr></table><table id="patientSlideTable"><thead><tr><td id="tcgaPatientsHeader" style="color:maroon;font-weight:bold">TCGA patients:</td><td id="diagnosticImagesHeader" style="color:maroon;font-weight:bold">Diagnostic Images:</td></tr></thead><tbody id="patientSlideTableBody"></tbody></table><table id="hiddenTable" hidden=true><tr><td style="vertical-align:top"><div id="tcgaPatientsHeader_">TCGA patients:</div><div id="tcgaPatients"></div></td><td style="vertical-align:top"><div id="slideImagesHeader">Slide Images:</div><div id="slideImages"></div></td><td style="vertical-align:top"><div id="diagnosticImagesHeader_">Diagnostic Images:</div><div id="diagnosticImages"></div></td><td style="vertical-align:top"><div id="buttonResults"></div></td></tr></table>'
             openHealthJobDC.innerHTML='<table cellpadding="10px"><tr><td style="vertical-align:top"><table><tr><td style="vertical-align:top"><div>% Necrotic Cells:</div><div id="percent_necrosis"></div><div>% Tumor Nuclei:</div><div id="percent_tumor_nuclei"></div><div>Location:</div><div id="section_location"></div></td><td style="vertical-align:top"><div>% Tumor Cells:</div><div id="percent_tumor_cells"></div><div>% Lymphocyte Infiltration:</div><div id="percent_lymphocyte_infiltration"></div><div>Race:</div><div id="race"></div><div>Gender:</div><div id="gender"></div></td><td style="vertical-align:top"><div>% Stromal Cells:</div><div id="percent_stromal_cells"></div><div style="color:blue">Karnofsky Score:</div><div id="karnofsky_performance_score" style="border:solid;border-color:blue;box-shadow:10px 10px 5px #888888"></div><div>% Monocyte Infiltration:</div><div id="percent_monocyte_infiltration"></div><div>% Neutrophil Infiltration:</div><div id="percent_neutrophil_infiltration"></div></td></tr></table></td><td style="vertical-align:top"><h3>GBM Tumor progression</h3><div id="tumorProgression"></div><b>Legend</b>: color indicates Karnofsky performance score (see framed bar chart); diameter indicates number of images</td></tr></table><table><tr><td style="vertical-align:top"><table id="patientSlideTable"><thead><tr><td id="tcgaPatientsHeader" style="color:maroon;font-weight:bold">TCGA patients:</td><td id="diagnosticImagesHeader" style="color:maroon;font-weight:bold">Diagnostic Images:</td></tr></thead><tbody id="patientSlideTableBody"></tbody></table></td><td id="moreInfo" style="vertical-align:top"></td></tr></table><table id="hiddenTable" hidden=true><tr><td style="vertical-align:top"><div id="tcgaPatientsHeader_">TCGA patients:</div><div id="tcgaPatients"></div></td><td style="vertical-align:top"><div id="slideImagesHeader">Slide Images:</div><div id="slideImages"></div></td><td style="vertical-align:top"><div id="diagnosticImagesHeader_">Diagnostic Images:</div><div id="diagnosticImages"></div></td><td style="vertical-align:top"><div id="buttonResults"></div></td></tr></table>'
-            
+
             var docs = openHealth.tcga.dt.lggDocs
             var tab = openHealth.tcga.dt.lggTab
 
@@ -1079,7 +1079,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             				} else {
             					y[xi.patientid].push(xi.caseid)
             				}
-            				
+
             			})
             			openHealth.tcga.dt.lggDx=y
             			listDxSlides(pp)
@@ -1095,7 +1095,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             		/*pp.map(function(pi){
             			//var di = openHealth.tcga.dt.lggDx[pi]
             			var a = document.createElement('a')
-            			a.href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId="+pi
+            			a.href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId="+pi
             			a.textContent=pi
             			a.target="_blank"
             			var pa = document.createElement('p')
@@ -1109,14 +1109,14 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             				var tp = document.getElementById('dxSlide_'+pt) // target patient element
             				var dx = document.createElement('p')
             				dx.id="link_"+p
-            				dx.innerHTML='<a href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+p+'" target=_blank>'+p+'</a>'
+            				dx.innerHTML='<a href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId='+p+'" target=_blank>'+p+'</a>'
             				tp.appendChild(dx)
             			}
 
             		})
-            	
+
             	}
-            	
+
 
             }
 			var listSlides=function(){
@@ -1169,18 +1169,18 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 							pr.appendChild(c)
 						})
 					}*/
-					
+
 				})
 				ss.sort().forEach(function(s,i){
 					var pr = document.createElement('p')
-					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://quip.bmi.stonybrook.edu/camicroscope-qin/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
+					pr.innerHTML=' '+i+') <button onclick="openHealth.tcga.resultsSlide(this)">'+s+'</button> <a href="http://quip1.uhmc.sunysb.edu/camicroscope/osdCamicroscope.php?tissueId='+s+'" target=_blank> caMicroscope </a>.'
 					slideImages.appendChild(pr)
 				})
 				listDxSlides(pp)
 			}
 
             var cf=crossfilter(docs);
-            
+
 
 			var addRowChard=function(parm,Uparm,fun){
             D[parm]=cf.dimension(function(d){
@@ -1197,7 +1197,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
             })
             G[parm]=D[parm].group().reduce(
               // reduce in
-		      function(p,v){		      	
+		      function(p,v){
 		      	return R[parm][v[parm]].c+=1
 		      },
 		      // reduce out
@@ -1217,13 +1217,13 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
-           		
+
            	if(fun){
 				fun(C[parm])
 			}
 
 			}
-			// - - - - version that tracks slides and images - - - - 
+			// - - - - version that tracks slides and images - - - -
 			var addRowChard2=function(parm,Uparm,fun){
             D[parm]=cf.dimension(function(d){
                 return d[parm]
@@ -1237,7 +1237,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 			openHealth.tcga.dt.lggTab.bcr_slide_barcode.map(function(s){
             	S[parm][s]={c:0}
             })
-            
+
             if(!Uparm){
             	U[parm] = openHealth.tcga.sortPercent(openHealth.unique(tab[parm]))
             } else {
@@ -1251,13 +1251,13 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
               // reduce in
 		      function(p,v){
 		      	P[parm][v.patient].c=P[parm][v.patient].c+1
-		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c+1	      	
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c+1
 		      	return R[parm][v[parm]].c+=1
 		      },
 		      // reduce out
 		      function(p,v){
 		      	P[parm][v.patient].c=P[parm][v.patient].c-1
-		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c-1	      	
+		      	S[parm][v.bcr_slide_barcode].c=S[parm][v.bcr_slide_barcode].c-1
 		      	return R[parm][v[parm]].c-=1
 		      },
 			  // ini
@@ -1273,7 +1273,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
            			if(d.key=="[Not Available]"){return -1}
            			else{return parseInt(d.key)}
            		})
-           		
+
            	if(fun){
 				fun(C[parm])
 			}
@@ -1282,7 +1282,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
 			// - - - - - - - - - - - - -
 
-			
+
 
 			addRowChard('percent_necrosis')
 			addRowChard('percent_tumor_cells')
@@ -1307,7 +1307,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 						})
 				}
 			)
-			
+
 			C.tumorProgression = dc.bubbleChart("#tumorProgression");
 			D.tumorProgression = cf.dimension(function(d){return d.patient})
 			R.tumorProgression={}
@@ -1349,7 +1349,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 						tcgaPatients.appendChild(p)
        				}
        				*/
-       				
+
 
        				return v.value/2
        			})
@@ -1368,7 +1368,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 					if(isNaN(v)){return -1}
 					else{return v}
 				})
-		
+
 		    dc.renderAll();
 
             $('.dc-chart g.row text').css('fill','black')
@@ -1402,7 +1402,7 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
         })
 
-                
+
 
 
     }
@@ -1412,5 +1412,5 @@ openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function
 
 
 
-    
+
 })
