@@ -60,7 +60,9 @@ retrieveNpiData.onclick=function(){
         var tdh=td("npi_head","NPI")
         tdh.style.color="maroon"
         tdh.style.border="1px solid maroon"
-        tdh.style.border=
+        if(tdh.textContent!=="NPI"){
+            tdh.style.cursor="pointer"
+        }
         headTr.appendChild(tdh)
         var trs=[] // keeping rows in a matrix
         for(var i=0;i<npis.length;i++){
