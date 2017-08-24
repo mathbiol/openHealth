@@ -17,14 +17,18 @@ openHealth.cmsNPI=function(npi,fun){
 }
 
 // Assemble UI 
-openHealthJob.innerHTML='paste/type NPIs:<br><textarea style="width:100%;height:50%" id="npiInputTextArea"></textarea><br><button id="retrieveNpiData">Retrieve NPI data</button>'
+openHealthJob.innerHTML='paste/type NPIs:<br><textarea style="width:100%;height:50%" id="npiInputTextArea"></textarea><br><button id="retrieveNpiData">Retrieve NPI data</button> <button id="resetLocalStorage">resetCache</button>'
+resetLocalStorage.onclick=function(){
+    localStorage.clear()
+    this.hidden=true
+}
 retrieveNpiData.onclick=function(){
     var npis = npiInputTextArea.value
     npis=npis.replace(/\D+/g,',')
     if(npis.slice(0,1)==','){npis='['+npis.slice(1)}else{npis='['+npis}
     if(npis.slice(-1)==','){npis=npis.slice(0,-1)+']'}else{npis=npis+']'}
     npis=JSON.parse(npis)
-    openHealthJob.innerHTML='Retrieving data from <a href="https://www.bloomapi.com" target="_blank">www.bloomapi.com</a> (Thank you!)<br><span style="color:red">retrieving data on '+npis.length+' NPIs...</span>'
+    openHealthJob.innerHTML='Retrieving data from <a href="https://npiregistry.cms.hhs.gov" target="_blank">CMS</a><br><span style="color:red">retrieving data on '+npis.length+' NPIs...</span>'
     var docs=[]
     gotNPIs=function(docs){
         console.log('retrieved '+docs.length+' reccords')
