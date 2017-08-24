@@ -125,6 +125,7 @@ retrieveNpiData.onclick=function(){
                 x.status='found'
                 docs[i]=x
                 console.log('got npi '+npis[i]+' from bloomNPI')
+                console.log(npis[i],x)
                 localStorage.setItem('npi'+npis[i],JSON.stringify(x))
                 fun(i)
                 if(i<npis.length-1){getNPI(i+1,fun)}else{gotNPIs(docs)}         
@@ -133,7 +134,7 @@ retrieveNpiData.onclick=function(){
         setTimeout(function(){
             if(!docs[i]){
                 docs[i]={status:'not found'}
-                localStorage.setItem('npi'+npis[i],JSON.stringify(docs[i]))
+                //localStorage.setItem('npi'+npis[i],JSON.stringify(docs[i]))
                 if(i<npis.length-1){getNPI(i+1,fun)}else{gotNPIs(docs)}
             }
         },2000) 
