@@ -1,8 +1,6 @@
 console.log('cmsNPI.js loaded')
 
-// add bloomAPI method
-// example URL composition
-// http://www.bloomapi.com/api/npis/1104978014?callback=lala
+// https://npiregistry.cms.hhs.gov/registry/help-api
 
 openHealth.cmsNPI=function(npi,fun){
     //var id="fun"+Math.random().toString().slice(2)
@@ -32,7 +30,7 @@ retrieveNpiData.onclick=function(){
     var docs=[]
     gotNPIs=function(docs){
         console.log('retrieved '+docs.length+' reccords')
-        openHealthJob.innerHTML='Retrieved '+docs.length+' reccords from <a href="https://www.bloomapi.com" target="_blank">www.bloomapi.com</a> (Thank you!)<br><div id="divNPIs">Add Column<select id="addField"></select><hr><div id="npiTable"></div></div>'
+        openHealthJob.innerHTML='Retrieved '+docs.length+' reccords from <a href="https://npiregistry.cms.hhs.gov/registry/help-api" target="_blank">https://npiregistry.cms.hhs.gov</a> (Thank you!)<br><div id="divNPIs">Add Column <select id="addField"></select><hr><div id="npiTable"></div></div>'
         d=docs
         // list fields
         var flds={}
@@ -42,7 +40,6 @@ retrieveNpiData.onclick=function(){
             })
         })
         flds=Object.getOwnPropertyNames(flds)
-        4
         var tbl=document.createElement('table')
         tbl.style.border="1px solid navy"
         npiTable.appendChild(tbl)
@@ -77,7 +74,8 @@ retrieveNpiData.onclick=function(){
         }
         // Add options to select
 
-        flds.sort().forEach(function(f,i){
+        flds = (['Select a field below:'].concat(flds.sort()))
+        flds.forEach(function(f,i){
             var op = document.createElement('option')
             op.value=i;op.textContent=flds[i]
             addField.appendChild(op)
@@ -87,37 +85,30 @@ retrieveNpiData.onclick=function(){
             addColumn(this.options[this.value].textContent)
         }
         var addColumn=function(c){
-            console.log('column "'+c+'" added to table')
-            var tdc=td(c+'_head',c)
-            tdc.style.padding=5
-            tdc.style.color="maroon"
-            tdc.style.border="1px solid maroon"
-            tdc.onclick=function(){
-                for(var i=0;i<trs.length;i++){
-                    var x = document.getElementById(c+'_'+i)
+            if(c!="Select a field below:"){
+                console.log('column "'+c+'" added to table')
+                var tdc=td(c+'_head',c)
+                tdc.style.padding=5
+                tdc.style.color="maroon"
+                tdc.style.border="1px solid maroon"
+                tdc.onclick=function(){
+                    for(var i=0;i<trs.length;i++){
+                        var x = document.getElementById(c+'_'+i)
+                        x.parentElement.removeChild(x)
+                    }
+                    var x = document.getElementById(c+'_head')
                     x.parentElement.removeChild(x)
                 }
-                var x = document.getElementById(c+'_head')
-                x.parentElement.removeChild(x)
-            }
-            headTr.appendChild(tdc)
-            trs.forEach(function(t,i){
-                var tdi=td(c+'_'+i,docs[i][c])
-                tdi.style.padding=5
-                tdi.style.color="blue"
-                tdi.style.border="1px solid blue"
-                t.appendChild(tdi)
-            })
+                headTr.appendChild(tdc)
+                trs.forEach(function(t,i){
+                    var tdi=td(c+'_'+i,docs[i][c])
+                    tdi.style.padding=5
+                    tdi.style.color="blue"
+                    tdi.style.border="1px solid blue"
+                    t.appendChild(tdi)
+                })
+            }   
         }
-
-        4
-
-
-
-
-
-
-
     }
     var getNPI = function (i,fun){
         if(localStorage.getItem('npi'+npis[i])){
@@ -143,7 +134,7 @@ retrieveNpiData.onclick=function(){
         },2000) 
     }
     getNPI(0,function(i){
-        openHealthJob.innerHTML='Retrieving data from <a href="https://www.bloomapi.com" target="_blank">www.bloomapi.com</a> (Thank you!)<br><span style="color:red">retrieving data on '+(i+1)+' out of a total of '+npis.length+' NPIs...</span>'
+        openHealthJob.innerHTML='Retrieving data from <a href="https://npiregistry.cms.hhs.gov/registry/help-api" target="_blank">https://npiregistry.cms.hhs.gov</a> (Thank you!)<br><span style="color:red">retrieving data on '+(i+1)+' out of a total of '+npis.length+' NPIs...</span>'
     })
     
 
