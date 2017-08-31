@@ -20,6 +20,12 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
         var urls = zipSuffolk.map(function(z){return "https://health.data.ny.gov/resource/5q8c-d6xq.json?patient_zipcode="+z});
         openHealth.sodas(urls,undefined,function(dt){
         	dt = dt.filter(function(d){return d.expected_rate_per_100_000_people}) // keep only entries with predictions
+			dt = dt.map(function(d){ // clean pqi names
+				d.pqi_name=d.pqi_name.replace(/([\s\-])(\w)/g,function(m){
+					return m.toUpperCase()}
+				)
+				return d
+			})
 			var tab = openHealth.docs2tab(dt);
 			dt=openHealth.tab2docs(tab);
 			res.dt=dt
