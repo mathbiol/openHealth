@@ -239,12 +239,14 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 					.dimension(years)
 					.group(G_years)
 					.colors(d3.scale.linear().domain([-1,0,0.95,1.1,1.75,10]).range(["silver","green","green","yellow","red","brown"]))
-					.colorAccessor(function(d, i){
-						
-						if(res.G_years_reduce[d.key].expt){return res.G_years_reduce[d.key].obs/res.G_years_reduce[d.key].expt}
-						else {return 0}
-                	})
-					.title(function(d){return d.year});
+					.colorAccessor(function(d, i){						
+							if(res.G_years_reduce[d.key].expt){return res.G_years_reduce[d.key].obs/res.G_years_reduce[d.key].expt}
+							else {return 0}
+                		})
+					.title(function(d){return d.year})
+					.ordering(function(d){
+						return d.key
+						});
                 
                 C_Obs
 					.width(400)
