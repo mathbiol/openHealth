@@ -3,7 +3,7 @@ console.log('tcgascope.js loaded')
 
 
 openHealth.require('https://mathbiol.github.io/openHealth/tcga/tcga.js',function(){
-	var selectTumorHTML='<h3 style="color:navy">Tumor Type: <select onchange="tumorChanged(this)" style="font-color:navy;background-color:silver;font-size:large" id="selectTumor"><option>GBM - Glioblastoma Multiforme</option><option>LGG - Lower Grade Glioma</option></select></h3>'
+	var selectTumorHTML='<h3 style="color:navy">Tumor Type: <select onchange="tumorChanged(this)" style="font-color:navy;background-color:silver;font-size:large" id="selectTumor"><option>GBM - Glioblastoma Multiforme</option><option>LGG - Lower Grade Glioma (NOT CODED YET)</option><option>etc ...</option></select></h3>'
 	openHealthJob.innerHTML=selectTumorHTML+'<div id="openHealthJobMsg" style="color:red">processing ...</div><div id="openHealthJobDC"></div>'
 	tumorChanged=function(evt){
 		var tm=evt.selectedOptions[0].value.slice(0,3)
