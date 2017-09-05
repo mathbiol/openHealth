@@ -390,7 +390,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
             			}
             		}
 
-            		openHealth.getJSON("jobs/zips_suffolk_HD_geoNew.json",renderAll)
+            		openHealth.getJSON("https://mathbiol.github.io/openHealth/jobs/zips_suffolk_HD_geoNew.json",renderAll)
             	}
             	document.getElementById("genTable").onclick=function(){
             		var tab = JSON.parse(JSON.stringify(res.tabela)) // clone object
