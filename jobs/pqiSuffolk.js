@@ -30,7 +30,7 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 			dt=openHealth.tab2docs(tab);
 			res.dt=dt
             document.getElementById('openHealthJob').innerHTML='<span style="color:green"> > <b style="color:blue">'+dt.length+'</b> PQI Suffolk records found in <a href="https://health.data.ny.gov/Health/Hospital-Inpatient-Prevention-Quality-Indicators-P/5q8c-d6xq" target=_blank>https://health.data.ny.gov</a> (ref# <a href="https://health.data.ny.gov/resource/5q8c-d6xq.json" target=_blank>5q8c-d6xq</a>)<h4 style="color:navy">Hospital Inpatient Prevention Quality Indicators (PQI) for Adult Discharges by Zip Code (SPARCS): Beggining 2009</h4> <span style="color:red" id="jobMsg">Assembling visualization ...</span></span>';
-            document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"> <input type="button" value="run clock" id="runClock"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable">  <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> <button id="showHideTable" hidden=true>hide</button></h4><div id="numTable"></div>';
+            document.getElementById('openHealthJob').innerHTML+='<br><input id="dcReset" type="button" value="reset"> <input type="button" value="run clock" id="runClock"><table><tr><td id="suffolkYearPie"></td><td id="suffolkChoropleth"></td></tr></table><table><tr><td id="suffolkObservedPqi"></td><td  id="suffolkExpectedPqi">...</td></tr></table><hr><h4 tabelaHeader>Observed / expected <input type="button" value="tabulate" id="genTable">  <input type="checkbox" id="keepTableUpdated"> <span style="font-size:12">keep updated</span> <button id="showHideTable" hidden=true>show/hide</button></h4><div id="numTable"></div>';
             runClock.onclick=function(){
             	//console.log(Date())
             	if(runClock.value=="run clock"){
@@ -425,8 +425,8 @@ openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","ht
 			showHideTable.onclick=function(){
 				//numTable.hidden=!numTable.hidden
 				$('table',numTable)[0].hidden=!$('table',numTable)[0].hidden
-				if(this.textContent=="hide"){this.textContent="show"}
-				else{this.textContent="hide"}
+				//if(this.textContent=="hide"){this.textContent="show"}
+				//else{this.textContent="hide"}
 				//debugger
 			}	
                 
