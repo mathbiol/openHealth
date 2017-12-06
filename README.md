@@ -1,6 +1,8 @@
 #### **OpenHealth**, a [web computing](https://en.wikipedia.org/wiki/Web_computing) sandbox to explore public health data.
 Live tool at https://mathbiol.github.io/openHealth.
 
+Published report: Almeida JS, Hajagos J, Crnosija I, T Kurc, M Saltz, J Saltz (2015) OpenHealth Platform for Interactive Contextualization of Population Health Open Data. Proceedings AMIA 2015: 297-305 [[PMID:26958160](https://www.ncbi.nlm.nih.gov/pubmed/26958160)].
+
 To incorporate openHealth into your tool/analysis, all you need is 
 ``` HTML
 <script src="https://mathbiol.github.io/openHealth/openHealth.js"></script>
