@@ -5,7 +5,7 @@ console.log("pqiSuffolk.js")
 
 
 // start with the dependencies
-openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","//square.github.io/crossfilter/crossfilter.v1.min.js","https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.10/dc.min.js","https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.10/dc.css","https://mathbiol.github.io/openHealth/jobs/zipSuffolkPop.js"],function(){ // after satisfying d3 dependency
+openHealth.getScript(["//cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js","https://www.google.com/jsapi","https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js","https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.10/dc.min.js","https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.10/dc.css","https://mathbiol.github.io/openHealth/jobs/zipSuffolkPop.js"],function(){ // after satisfying d3 dependency
 
 	// check for new version
 	if(localStorage.pqiSuffolk!='1.0'){
